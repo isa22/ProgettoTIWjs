@@ -31,11 +31,11 @@
 						<div class="card w-auto h-100 mb-4 ml-5 shadow-sm">
 							<div class="ml-sm-5 mr-sm-5">
 								<h5 class="mt-sm-4 mb-sm-3">Login</h5>
-								<form action="#" th:action="@{/CreateComment}" method="POST">
+								<form action="#">
 									<div class="form-group">
 										<label for="loginUsername">Username:</label> <input
 											type="text" class="form-control" id="loginUsername"
-											placeholder="Enter username" name="userName" required>
+											placeholder="Enter username" name="userName" required maxlength="45"> <!-- no more than 45 char in the DB for usernames -->
 										<div class="invalid-feedback">Please fill out this
 											field.</div>
 									</div>
@@ -55,7 +55,7 @@
 						<div class="card h-100 mb-4 ml-4 mr-5 w-auto shadow-sm">
 							<div class="ml-sm-5 mr-sm-5">
 								<h5 class="mt-sm-4 mb-sm-3">Registration</h5>
-								<form action="#" th:action="@{/CreateComment}" method="POST">
+								<form action="#">
 									<div class="form-group">
 										<label for="registerUsername">Username:</label> <input
 											type="text" class="form-control" id="registerUsername"
