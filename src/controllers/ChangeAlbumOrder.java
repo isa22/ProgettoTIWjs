@@ -2,6 +2,7 @@ package controllers;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,8 +68,9 @@ public class ChangeAlbumOrder extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		HttpSession session = request.getSession();
+		JSONObject resp = new JSONObject();
 		if(session == null) {
-			JSONObject resp = new JSONObject();
+			
 			resp.append("redirect","/Login");
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
@@ -79,8 +81,16 @@ public class ChangeAlbumOrder extends HttpServlet {
 		int userId = data.getInt("userId");
 		JSONArray newOrder = data.getJSONArray("newOrder");
 		List orderList = newOrder.toList();
-		AlbumOrderDAO orderDao = new AlbumOrderDAO(connection);
-		orderDao.changeAlbumOrder(userId, orderList);
+		try {
+			AlbumOrderDAO orderDao = new AlbumOrderDAO(connection);
+			orderDao.changeAlbumOrder(userId, orderList);
+		}
+		catch(SQLException e) {
+			resp.append("error", "Update failed");
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(resp.toString());
+		}
 		
 	}
 
