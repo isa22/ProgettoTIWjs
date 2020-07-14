@@ -18,8 +18,8 @@ public class AlbumDAO {
 
 	public List<Album> findAll() throws SQLException {
 		List<Album> albums = new ArrayList<Album>();
-		String query = "SELECT * from dbtiwexam1920.album";
-		String query2 = "SELECT path from dbtiwexam1920.image group by album";
+		String query = "SELECT * from dbtiwexam1920js.album";
+		String query2 = "SELECT path from dbtiwexam1920js.image group by album";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			try (ResultSet result = pstatement.executeQuery();) {
 				while (result.next()) {
@@ -46,7 +46,7 @@ public class AlbumDAO {
 	
 	public Album getTitleOfAlbum(int albumId) throws SQLException {
 		Album album = new Album();
-		String query = "SELECT title from dbtiwexam1920.album where id = ?";
+		String query = "SELECT title from dbtiwexam1920js.album where id = ?";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setInt(1, albumId);
 			try (ResultSet result = pstatement.executeQuery();) {

@@ -18,7 +18,7 @@ public class ImageDAO {
 	
 	public List<Image> findImagesByAlbum(int albumId, int pageOffset) throws SQLException {
 		List<Image> images = new ArrayList<Image>();
-		String query = "SELECT * from dbtiwexam1920.image where album = ? limit ?,5";
+		String query = "SELECT * from dbtiwexam1920js.image where album = ? limit ?,5";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setInt(1, albumId);
 			pstatement.setInt(2, (pageOffset-1)*5);
@@ -40,7 +40,7 @@ public class ImageDAO {
 	
 	public int getNumberOfImagesByAlbum(int albumId) throws SQLException {
 		int count = 0;
-		String query = "SELECT COUNT(*) from dbtiwexam1920.image where album = ?";
+		String query = "SELECT COUNT(*) from dbtiwexam1920js.image where album = ?";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setInt(1, albumId);
 			try (ResultSet result = pstatement.executeQuery();) {
@@ -54,7 +54,7 @@ public class ImageDAO {
 	public Image findImageDescriptionByImage(int imageId) throws SQLException {
 		Image image = null;
 
-		String query = "SELECT * from dbtiwexam1920.image where id = ?";
+		String query = "SELECT * from dbtiwexam1920js.image where id = ?";
 		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
 			pstatement.setInt(1, imageId);
 			try (ResultSet result = pstatement.executeQuery();) {

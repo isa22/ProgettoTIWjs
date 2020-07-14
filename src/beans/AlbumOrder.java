@@ -1,15 +1,15 @@
 package beans;
 
-import java.util.Map;
+import java.util.List;
 
 public class AlbumOrder {
-    private Map order;
+    private List order;
 
-    public Map getOrder() {
+    public List getOrder() {
         return order;
     }
 
-    public void setOrder(Map order) {
+    public void setOrder(List order) {
         this.order = order;
     }
 }

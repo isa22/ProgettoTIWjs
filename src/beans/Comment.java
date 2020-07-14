@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 public class Comment {
 	private Timestamp timestamp;
 	private int userId;
-	private String author;
 	private int imageId;
 	private String text;
 
@@ -23,14 +22,6 @@ public class Comment {
 	
 	public void setTimestamp(Timestamp timestamp) {
 		this.timestamp = timestamp;
-	}
-	
-	public String getAuthor() {
-		return author;
-	}
-	
-	public void setAuthor(String author) {
-		this.author = author;
 	}
 	
 	public int getImageId() {

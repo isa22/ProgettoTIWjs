@@ -23,12 +23,11 @@ DROP TABLE IF EXISTS `comment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `comment` (
-  `id` int NOT NULL AUTO_INCREMENT,
   `content` varchar(256) NOT NULL,
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `image` int NOT NULL,
   `user` int NOT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`time`,`image`,`user`),
   KEY `user_idx` (`user`),
   KEY `image_idx` (`image`),
   CONSTRAINT `image` FOREIGN KEY (`image`) REFERENCES `image` (`id`),
@@ -54,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-07-10 23:23:34
+-- Dump completed on 2020-07-15  1:02:08

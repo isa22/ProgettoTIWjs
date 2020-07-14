@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `albumorder`;
 CREATE TABLE `albumorder` (
   `album` int NOT NULL,
   `user` int NOT NULL,
-  `order` int NOT NULL,
+  `albumorder` int NOT NULL,
   PRIMARY KEY (`album`,`user`),
   KEY `user_idx` (`user`) /*!80000 INVISIBLE */,
   KEY `album_idx` (`album`),
@@ -52,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-07-10 23:23:33
+-- Dump completed on 2020-07-14 17:07:12
