@@ -25,7 +25,7 @@
 		  formData.append("username",username.value,password.value);
           
 		  //sending form to server
-		  makeFormCall("POST", 'CheckLogin', formData,
+		  makeFormCall("POST", 'Login', formData,
           
 		  //callback for response
 		  function(req) { 
@@ -74,10 +74,10 @@
     	
 		  //retrieving data from forms and putting them in formData
 		  var formData = new FormData();
-		  formData.append("username",username.value,password.value);
+		  formData.append("username",username.value,password1.value,password2.value);
           
 		  //sending form to server
-		  makeFormCall("POST", 'CheckLogin', formData,
+		  makeFormCall("POST", 'Register', formData,
           
 		  //callback for response
 		  function(req) { 
