@@ -67,14 +67,21 @@ public class Register extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String usrn = null;
-		String pwd = null;
+		String pwd1 = null;
+		String pwd2 = null;
 		String email = null;
 		usrn = StringEscapeUtils.escapeJava(request.getParameter("username"));
-		pwd = StringEscapeUtils.escapeJava(request.getParameter("pwd"));
+		pwd1 = StringEscapeUtils.escapeJava(request.getParameter("password1"));
+		pwd2 = StringEscapeUtils.escapeJava(request.getParameter("password2"));
 		email = StringEscapeUtils.escapeJava(request.getParameter("email"));
-		if (usrn == null || pwd == null || usrn.isEmpty() || pwd.isEmpty() ) {
+		if (email == null || pwd1 == null || usrn == null || pwd2 == null || usrn.isEmpty() || pwd1.isEmpty() || email.isEmpty() || pwd2.isEmpty() ) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.getWriter().println("Credentials must be not null");
+			response.getWriter().println("Le credenziali non possono essere nulle");
+			return;
+		}
+		if(!pwd1.equals(pwd2)) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println("Le due password sono diverse");
 			return;
 		}
 		UserDAO userDao = new UserDAO(connection);
@@ -89,12 +96,12 @@ public class Register extends HttpServlet {
 		}
 		if (isPresent) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			response.getWriter().println("This email is already registered");
+			response.getWriter().println("Email già registrata");
 		}
 		else {
 			User user;
 			try {
-				user = userDao.insertUser(usrn, pwd, email);
+				user = userDao.insertUser(usrn, pwd1, email);
 			}
 			catch(SQLException e) {
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
