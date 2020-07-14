@@ -78,7 +78,7 @@ public class Register extends HttpServlet {
 			return;
 		}
 		UserDAO userDao = new UserDAO(connection);
-		bool isPresent;
+		boolean isPresent;
 		try {
 			isPresent = userDao.isPresent(usrn, email);
 		}
