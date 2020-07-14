@@ -33,8 +33,8 @@
             var message = req.responseText;
             switch (req.status) {
               case 200:
-            	sessionStorage.setItem('username', message);
-                window.location.href = "Home.html";
+            	sessionStorage.setItem('username', message); //save username
+                window.location.href = "Home.html";			 //redirect to home
                 break;
               case 400: // bad request
                 document.getElementById("errormessage").textContent = message;

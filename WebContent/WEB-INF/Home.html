@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<link href="../css/album.css" rel="stylesheet"
+	th:href="@{/css/album.css}">
+<link href="../css/bootstrap.css" rel="stylesheet"
+	th:href="@{/css/bootstrap.css}">
+<link href="../css/image.css" rel="stylesheet"
+	th:href="@{/css/image.css}">
+</head>
+
+<body>
+
+	<header class="header mt-auto pt-sm-5 bg-info shadow-sm">
+		<div class="d-flex justify-content-between"></div>
+	</header>
+
+	<main role="main" class="container">
+
+		<section class="jumbotron text-center">
+			<h1>Albums</h1>
+		</section>
+
+		<div class="album py-5 bg-light">
+			<div class="row" id="albumsRow">
+				<div class="col-md-4">
+					<div class="card mb-4 shadow-sm">
+						<a href="#"> <img class="card-img-top thumbnailsec" id="albumImage" src="#"
+							alt="Card image cap">
+						</a>
+						<div class="card-body">
+							<a id="albumName">Album Name</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</main>
+
+	<!-- Footer -->
+	<footer class="py-5 bg-info">
+		<div class="container">
+			<p class="m-0 text-center text-white">Copyright &copy; TIW Exam
+				2020</p>
+		</div>
+		<!-- /.container -->
+	</footer>
+
+</body>
+</html>
