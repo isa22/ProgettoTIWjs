@@ -4,6 +4,7 @@ public class User {
     private int id;
     private String username;
     private String password;
+    private String email;
     private AlbumOrder albumOrder;
 
 
@@ -22,11 +23,14 @@ public class User {
     public AlbumOrder getAlbumOrder() {
         return albumOrder;
     }
+    
+    public String getEmail() {
+        return email;
+    }
 
     public void setId(int id) {
         this.id = id;
     }
-
 
     public void setPassword(String password) {
         this.password = password;
@@ -38,5 +42,9 @@ public class User {
 
     public void setAlbumOrder(AlbumOrder albumOrder) {
         this.albumOrder = albumOrder;
+    }
+    
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
