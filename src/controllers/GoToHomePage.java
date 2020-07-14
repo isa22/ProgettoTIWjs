@@ -52,7 +52,8 @@ public class GoToHomePage extends HttpServlet{
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		if(session == null) {
-			path = "/WEB-INF/Login.html";
+			path = servletContext.getContextPath() + "/Login";
+			response.sendRedirect(path);
 		}
 
 		else {
