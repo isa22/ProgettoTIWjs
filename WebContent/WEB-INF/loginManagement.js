@@ -22,7 +22,8 @@
     	
 		  //retrieving data from forms and putting them in formData
 		  var formData = new FormData();
-		  formData.append("username",username.value,password.value);
+		  formData.append("username",username.value);
+		  formData.append("password",password.value);
           
 		  //sending form to server
 		  makeFormCall("POST", 'Login', formData,
@@ -74,7 +75,10 @@
     	
 		  //retrieving data from forms and putting them in formData
 		  var formData = new FormData();
-		  formData.append("username",username.value,password1.value,password2.value);
+		  formData.append("username",username.value);
+		  formData.append("password1",password1.value);
+		  formData.append("password2",password2.value);
+		  formData.append("email",email.value);
           
 		  //sending form to server
 		  makeFormCall("POST", 'Register', formData,
