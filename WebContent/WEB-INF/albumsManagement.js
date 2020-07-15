@@ -81,7 +81,7 @@
 	        //...
 
 			  imgLink.setAttribute('albumId', album.id);
-			  imgLink.addEventListener("click", (e) => { //TODO add the event for cursor on image
+			  imgLink.addEventListener("click", (e) => {
 	          // image clicked
 	          imageDetails.show(e.target.getAttribute("albumId")); // the list must know the details container
 	        }, false);
@@ -156,7 +156,7 @@
 					anchor.appendChild(linkText);
 					//anchor.missionid = mission.id; // make list item clickable
 					anchor.setAttribute('missionid', mission.id); // set a custom HTML attribute
-					anchor.addEventListener("click", (e) => {
+					anchor.addEventListener("click", (e) => { //TODO add the event for cursor on image
 						// dependency via module parameter
 						imageDetails.show(e.target.getAttribute("missionid")); // the list must know the details container
 					}, false);
