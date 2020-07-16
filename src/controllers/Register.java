@@ -106,8 +106,8 @@ public class Register extends HttpServlet {
 				return;
 			}
 			
-			//TODO check if usrn can be passed with a forward, otherwise call /Home?username=user.getId()
-			request.getSession().setAttribute("user", usrn);
+			
+			request.getSession().setAttribute("user", user);
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
