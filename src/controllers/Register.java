@@ -47,6 +47,9 @@ public class Register extends HttpServlet {
 		pwd1 = StringEscapeUtils.escapeJava(request.getParameter("password1"));
 		pwd2 = StringEscapeUtils.escapeJava(request.getParameter("password2"));
 		email = StringEscapeUtils.escapeJava(request.getParameter("email"));
+		
+		System.out.println("New user credentials: \n username: " + usrn + "\n password1:" + pwd1 + "\n password2:" + pwd2 + "\n email:" + email);
+		
 		//check if parameters are empty
 		if (email == null || pwd1 == null || usrn == null || pwd2 == null || usrn.isEmpty() || pwd1.isEmpty() || email.isEmpty() || pwd2.isEmpty() ) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
