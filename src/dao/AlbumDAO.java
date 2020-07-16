@@ -20,41 +20,123 @@ public class AlbumDAO {
 		List<Album> albums = new ArrayList<Album>();
 		String query = "SELECT * from dbtiwexam1920js.album";
 		String query2 = "SELECT path from dbtiwexam1920js.image group by album";
-		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
-			try (ResultSet result = pstatement.executeQuery();) {
-				while (result.next()) {
-					Album album = new Album();
-					album.setId(result.getInt("id"));
-					album.setDate(result.getTimestamp("date"));
-					album.setTitle(result.getString("title"));
-					albums.add(album);
-				}
+		
+		ResultSet result = null;
+		PreparedStatement pstatement = null;
+		
+		try {
+			pstatement = connection.prepareStatement(query);
+			result = pstatement.executeQuery();
+			while (result.next()) {
+				Album album = new Album();
+				album.setId(result.getInt("id"));
+				album.setDate(result.getTimestamp("date"));
+				album.setTitle(result.getString("title"));
+				albums.add(album);
+				
+			}
+		} catch (SQLException e) {
+		    e.printStackTrace();
+			throw new SQLException(e);
+		} finally {
+			try {
+				result.close();
+			} catch (Exception e1) {
+				throw new SQLException(e1);
+			}
+			try {
+				pstatement.close();
+			} catch (Exception e2) {
+				throw new SQLException(e2);
 			}
 		}
-		try (PreparedStatement pstatement = connection.prepareStatement(query2);) {
-			try (ResultSet result = pstatement.executeQuery();) {
-				int i = 0;
-				while (result.next()) {
-					albums.get(i).setFirstImagePath(result.getString("path"));
-					i++;	
-				}
+		try {
+			result = pstatement.executeQuery();
+			pstatement = connection.prepareStatement(query2);
+			int i = 0;
+			while (result.next()) {
+				albums.get(i).setFirstImagePath(result.getString("path"));
+				i++;	
+			}
+			
+		} catch (SQLException e3) {
+		    e3.printStackTrace();
+			throw new SQLException(e3);
+		} finally {
+			try {
+				result.close();
+			} catch (Exception e4) {
+				throw new SQLException(e4);
+			}
+			try {
+				pstatement.close();
+			} catch (Exception e5) {
+				throw new SQLException(e5);
 			}
 		}
 		return albums;
 	}
 	
-	
+	//TODO check if it is still needed in js or not
 	public Album getTitleOfAlbum(int albumId) throws SQLException {
 		Album album = new Album();
 		String query = "SELECT title from dbtiwexam1920js.album where id = ?";
-		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+		ResultSet result = null;
+		PreparedStatement pstatement = null;
+		
+		try {
+			pstatement = connection.prepareStatement(query);
 			pstatement.setInt(1, albumId);
-			try (ResultSet result = pstatement.executeQuery();) {
-				if(result.next())
-					album.setTitle(result.getString("title"));
+			result = pstatement.executeQuery();
+			if(result.next())
+				album.setTitle(result.getString("title"));
+			
+		} catch (SQLException e) {
+		    e.printStackTrace();
+			throw new SQLException(e);
+		} finally {
+			try {
+				result.close();
+			} catch (Exception e1) {
+				throw new SQLException(e1);
+			}
+			try {
+				pstatement.close();
+			} catch (Exception e2) {
+				throw new SQLException(e2);
 			}
 		}
 		return album;
+	}
+
+	
+	public int getNumberOfAlbum() throws SQLException {
+		int num = 0;
+		String query = "SELECT COUNT(*) FROM dbtiwexam1920js.album";
+		ResultSet result = null;
+		PreparedStatement pstatement = null;
+		try {
+			pstatement = connection.prepareStatement(query);
+			result = pstatement.executeQuery();
+			if(result.next())
+				num = result.getInt(1);
+		} catch (SQLException e) {
+		    e.printStackTrace();
+			throw new SQLException(e);
+		} finally {
+			try {
+				result.close();
+			} catch (Exception e1) {
+				throw new SQLException(e1);
+			}
+			try {
+				pstatement.close();
+			} catch (Exception e2) {
+				throw new SQLException(e2);
+			}
+		}
+		
+		return num;
 	}
 	
 	

@@ -21,19 +21,38 @@ public class CommentDAO {
 	public List<Comment> findCommentsByImage(int imageId) throws SQLException {
 		List<Comment> comments = new ArrayList<Comment>();
 		String query = "SELECT * from dbtiwexam1920js.comment where image = ?";
-		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+		
+		ResultSet result = null;
+		PreparedStatement pstatement = null;
+		
+		try {
+			pstatement = connection.prepareStatement(query);
 			pstatement.setInt(1, imageId);
-			try (ResultSet result = pstatement.executeQuery();) {
-				while (result.next()) {
-					Comment comment = new Comment();
-					comment.setTimestamp(result.getTimestamp("time"));
-					comment.setText(StringEscapeUtils.unescapeJava(result.getString("content")));
-					comment.setUserId(result.getInt("user"));
-					comment.setImageId(imageId);
-					comments.add(comment);
-				}
+			result = pstatement.executeQuery();
+			while (result.next()) {
+				Comment comment = new Comment();
+				comment.setTimestamp(result.getTimestamp("time"));
+				comment.setText(StringEscapeUtils.unescapeJava(result.getString("content")));
+				comment.setUserId(result.getInt("user"));
+				comment.setImageId(imageId);
+				comments.add(comment);
 			}
-		}
+		} catch (SQLException e) {
+		    e.printStackTrace();
+			throw new SQLException(e);
+
+		} finally {
+			try {
+				result.close();
+			} catch (Exception e1) {
+				throw new SQLException(e1);
+			}
+			try {
+				pstatement.close();
+			} catch (Exception e2) {
+				throw new SQLException(e2);
+			}
+		}		
 		return comments;
 	}
 	
@@ -42,12 +61,24 @@ public class CommentDAO {
 			throws SQLException {
 
 		String query = "INSERT into dbtiwexam1920js.comment (content, image, user) VALUES(?, ?, ?)";
-		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+		PreparedStatement pstatement = null;
+		try {
+			pstatement = connection.prepareStatement(query);
 			pstatement.setString(1, text);
 			pstatement.setInt(2, imageId);
 			pstatement.setInt(3, userId);
 			pstatement.executeUpdate();
-		}
+		} catch (SQLException e) {
+		    e.printStackTrace();
+			throw new SQLException(e);
+
+		} finally {
+			try {
+				pstatement.close();
+			} catch (Exception e2) {
+				throw new SQLException(e2);
+			}
+		}		
 	}
 
 }

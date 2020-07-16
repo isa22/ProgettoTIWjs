@@ -20,13 +20,27 @@ public class AlbumOrderDAO {
 	public void createAlbumOrder(int userId, int albumNum) throws SQLException {
 
 		String query = "INSERT into dbtiwexam1920js.albumorder (album, user, order) VALUES(?, ?, ?)";
+		PreparedStatement pstatement = null;
 		for (int i = 1; i <= albumNum; i++) {
-			try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			try {
+				pstatement = connection.prepareStatement(query);
 				pstatement.setInt(1, i);
 				pstatement.setInt(2, userId);
 				pstatement.setInt(3, i);
 				pstatement.executeUpdate();
 			}
+			catch (SQLException e) {
+			    e.printStackTrace();
+				throw new SQLException(e);
+
+			} finally {
+				try {
+					pstatement.close();
+				} catch (Exception e2) {
+					throw new SQLException(e2);
+				}
+			}		
+			
 		}
 	}
 	
@@ -34,13 +48,26 @@ public class AlbumOrderDAO {
 	public void changeAlbumOrder(int userId, List order) throws SQLException{
 		
 		String query = "UPDATE dbtiwexam1920js.albumorder SET aulbumorder = ? WHERE user = ? and album = ?";
+		PreparedStatement pstatement = null;
 		for (int i = 1 ; i<=order.size(); i++) {
-			try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+			try {
+				pstatement = connection.prepareStatement(query);
 				pstatement.setInt(1, i);
 				pstatement.setInt(2, userId);
 				pstatement.setInt(2, (int) order.get(i-1));
 				pstatement.executeUpdate();
 			}
+			catch (SQLException e) {
+			    e.printStackTrace();
+				throw new SQLException(e);
+
+			} finally {
+				try {
+					pstatement.close();
+				} catch (Exception e2) {
+					throw new SQLException(e2);
+				}
+			}		
 		}
 	}
 	
@@ -51,14 +78,32 @@ public class AlbumOrderDAO {
 		List<Integer> orders = new ArrayList<Integer>();
 		
 		String query = "SELECT album from dbtiwexam1920js.albumorder WHERE user = ? order by albumorder";
-		try (PreparedStatement pstatement = connection.prepareStatement(query);) {
+		ResultSet result = null;
+		PreparedStatement pstatement = null;
+		
+		try {
+			pstatement = connection.prepareStatement(query);
 			pstatement.setInt(1, userId);
-			try (ResultSet result = pstatement.executeQuery();) {
-				while (result.next()) {
-					orders.add(result.getInt(1));
-				}
+			result = pstatement.executeQuery();
+			while (result.next()) {
+				orders.add(result.getInt(1));
+			}
+		} catch (SQLException e) {
+		    e.printStackTrace();
+			throw new SQLException(e);
+		} finally {
+			try {
+				result.close();
+			} catch (Exception e1) {
+				throw new SQLException(e1);
+			}
+			try {
+				pstatement.close();
+			} catch (Exception e2) {
+				throw new SQLException(e2);
 			}
 		}
+		
 		order.setOrder(orders);
 		return order;
 	}

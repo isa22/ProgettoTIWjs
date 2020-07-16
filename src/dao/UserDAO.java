@@ -92,19 +92,18 @@ public class UserDAO {
 	
 	//check if the username and the password choosen by the user are already used
 	public boolean isPresent(String username, String email) throws SQLException {
-		int count = 0;
-		int count2 = 0;
-		String query = "SELECT COUNT(*) FROM dbtiwexam1920js.user WHERE username = ?";
-		String query2 = "SELECT COUNT(*) FROM dbtiwexam1920js.user WHERE email = ?";
+		String query = "SELECT * FROM dbtiwexam1920js.user WHERE username = ? or email = ?";
 		ResultSet result = null;
 		PreparedStatement pstatement = null;
-		
 		try {
 			pstatement = connection.prepareStatement(query);
 			pstatement.setString(1, username);
+			pstatement.setString(2, email);
 			result = pstatement.executeQuery();
-			while (result.next()) {
-				count = result.getInt(1);
+			if (!result.isBeforeFirst()) // no results, credential check failed
+				return false;
+			else {
+				return true;
 			}
 		} catch (SQLException e) {
 		    e.printStackTrace();
@@ -121,36 +120,7 @@ public class UserDAO {
 			} catch (Exception e2) {
 				throw new SQLException(e2);
 			}
-		}	
-		
-		try {
-			pstatement = connection.prepareStatement(query2);
-			pstatement.setString(1, email);
-			result = pstatement.executeQuery();
-			while (result.next()) {
-				count2 = result.getInt(1);
-			}
-		} catch (SQLException e) {
-		    e.printStackTrace();
-			throw new SQLException(e);
-
-		} finally {
-			try {
-				result.close();
-			} catch (Exception e1) {
-				throw new SQLException(e1);
-			}
-			try {
-				pstatement.close();
-			} catch (Exception e2) {
-				throw new SQLException(e2);
-			}
-		}	
-		
-		if (count==0 && count2==0)	//if count is 0 the username isn't present
-			return false;
-		else			
-			return true;
+		}
 	}
 	
 }
