@@ -115,17 +115,17 @@
 
 			this.show = function(next) {
 				var self = this;
-				makeCall("GET", "GetMissionsData", null,
+				makeCall("GET", "GetPicturesData", null,
 					function(req) {
 						if (req.readyState == 4) {
 							var message = req.responseText;
 							if (req.status == 200) {
-								var missionsToShow = JSON.parse(req.responseText);
-								if (missionsToShow.length == 0) {
-									self.alert.textContent = "No missions yet!";
+								var picturesToShow = JSON.parse(req.responseText);
+								if (picturesToShow.length == 0) {
+									self.alert.textContent = "No pictures yet!";
 									return;
 								}
-								self.update(missionsToShow); // self visible by closure
+								self.update(picturesToShow); // self visible by closure
 								if (next) next(); // show the default element of the list if present
 							}
 						} else {
