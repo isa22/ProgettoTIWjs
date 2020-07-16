@@ -11,7 +11,9 @@
   };
 	
   //login submitted event
-  document.getElementById("loginButton").addEventListener('click', (e) => { 
+  document.getElementById("loginButton").addEventListener('click', (e) => {
+	  
+	  console.log("Loggign in...");
     
 	  //getting forms reference
 	  var username = document.getElementById("loginUsername");
@@ -23,6 +25,7 @@
 		  //retrieving data from forms and putting them in formData
 		  var formData = new FormData();
 		  formData.append("username",username.value);
+		  console.log("User: " + username.value);
 		  formData.append("password",password.value);
           
 		  //sending form to server
@@ -38,13 +41,13 @@
                 window.location.href = "Home.html";			 //redirect to home
                 break;
               case 400: // bad request
-                document.getElementById("errormessage").textContent = message;
+                document.getElementById("alertMessage").textContent = message;
                 break;
               case 401: // unauthorized
-                  document.getElementById("errormessage").textContent = message;
+                  document.getElementById("alertMessage").textContent = message;
                   break;
               case 500: // server error
-            	document.getElementById("errormessage").textContent = message;
+            	document.getElementById("alertMessage").textContent = message;
                 break;
             }
           }
@@ -53,9 +56,10 @@
     } else {
     	
     	 //report to user about form invalid content
-    	 username.reportValidity();
     	 password.reportValidity();
-    }
+    	 username.reportValidity();
+
+      }
   });
   
   //registration submitted event
@@ -68,10 +72,11 @@
 	  var password2 = document.getElementById("registerPassword2");
 	  
 	  var repeatedPasswordOk = (password1.value === password2.value);
+	  var emailOk = validateEmail(email.value);
 	      
 	  //form content validity is checked
 	  if (username.checkValidity() && password1.checkValidity() &&
-		  email.checkValidity() && password2.checkValidity() && repeatedPassword) { 
+		  email.checkValidity() && password2.checkValidity() && repeatedPasswordOk && email) {
     	
 		  //retrieving data from forms and putting them in formData
 		  var formData = new FormData();
@@ -93,13 +98,13 @@
                 window.location.href = "Home.html";
                 break;
               case 400: // bad request
-                document.getElementById("errormessage").textContent = message;
+                document.getElementById("alertMessage").textContent = message;
                 break;
               case 401: // unauthorized
-                  document.getElementById("errormessage").textContent = message;
+                  document.getElementById("alertMessage").textContent = message;
                   break;
               case 500: // server error
-            	document.getElementById("errormessage").textContent = message;
+            	document.getElementById("alertMessage").textContent = message;
                 break;
             }
           }
@@ -108,12 +113,13 @@
     } else {
     	
     	 //report to user about form invalid content
-    	 username.reportValidity();
-   	 	 password1.reportValidity();
-   	 	 password2.reportValidity();
-   	     email.reportValidity();
-   	     if(!validateEmail(email.value)) setCustomValidity('Wrong email');
-    	 if(!repeatedPassword) setCustomValidity('Password has not been reapeted correctly'); 
+          password2.reportValidity();
+          if(!repeatedPasswordOk) repeatedPasswordOk.setCustomValidity('La password non è stata ripetuta correttamente');
+          password1.reportValidity();
+          email.reportValidity();
+          if(!emailOk) email.setCustomValidity('Email errata');
+          username.reportValidity();
+
     }
   });
   

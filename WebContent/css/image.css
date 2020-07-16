@@ -44,6 +44,13 @@ img.thumbnailsec {
   text-align: center;
 }
 
+.jumbotron2 {
+  padding: 2rem 1rem;
+  margin-bottom: 0.1rem;
+  background-color: #e9ecef;
+  border-radius: 0.3rem;
+}
+
 @media (min-width: 768px) {
     .col-sm-5ths {
         width: 20%;

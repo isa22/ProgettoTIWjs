@@ -15,15 +15,24 @@
 		<div class="d-flex justify-content-between"></div>
 	</header>
 
-	<main role="main" class="container">
 
-		<section class="jumbotron text-center mb-sm-5">
+	<main role="main" class="container">
+		<section class="jumbotron2 text-center">
 			<h1>Authentication</h1>
 		</section>
 
+		<!-- Alert bar -->
+		<div class="col md-8">
+				<div class="card shadow-sm ml-4 mr-4">
+					<div class="card-body">
+					<h5 class="mt-sm-2 mb-sm-2" id="alertMessage"></h5>
+					</div>
+				</div>
+		</div>
+
 
 		<!-- login/registration form -->
-		<div class="album py-5 bg-light mt-sm-5 mb-sm-5">
+		<div class="album py-5 bg-light mb-sm-5">
 			<div class="row">
 				<div class="col-container">
 
@@ -35,16 +44,18 @@
 									<div class="form-group">
 										<label for="loginUsername">Username:</label> <input
 											type="text" class="form-control" id="loginUsername"
-											placeholder="Enter username" name="userName" required maxlength="45"> <!-- no more than 45 char in the DB for usernames -->
-										<div class="invalid-feedback">Please fill out this
-											field.</div>
+											placeholder="Enter username" name="username" required
+											maxlength="45">
+										<!-- no more than 45 char in the DB for usernames -->
+										
 									</div>
 									<div class="form-group">
 										<label for="loginPassword">Password:</label> <input
 											class="form-control" name="password" type="password"
 											placeholder="Enter password" id="loginPassword" required /></input>
 									</div>
-									<button id="loginButton" class="my-sm-4 btn btn-outline-primary" type="submit">Submit</button>
+									<input id="loginButton" value="Submit"
+										class="my-sm-4 btn btn-outline-primary" type="button"></input>
 								</form>
 							</div>
 						</div>
@@ -59,28 +70,28 @@
 									<div class="form-group">
 										<label for="registerUsername">Username:</label> <input
 											type="text" class="form-control" id="registerUsername"
-											placeholder="Enter username" name="userName" required>
-										<div class="invalid-feedback">Please fill out this
-											field.</div>
+											placeholder="Enter username" name="username" required>
+									
 									</div>
 									<div class="form-group">
-										<label for="registerEmail">Email:</label> <input
-											type="text" class="form-control" id="registerEmail"
-											placeholder="Enter email" name="userName" required>
+										<label for="registerEmail">Email:</label> <input type="text"
+											class="form-control" id="registerEmail"
+											placeholder="Enter email" name="email" required>
 										<div class="invalid-feedback">Please fill out this
 											field.</div>
 									</div>
 									<div class="form-group">
 										<label for="registerPassword1">Password:</label> <input
-											class="form-control" name="password" type="password"
+											class="form-control" name="password1" type="password"
 											placeholder="Enter password" id="registerPassword1" required /></input>
 									</div>
 									<div class="form-group">
 										<label for="registerPassword2">Repeat password:</label> <input
-											class="form-control" name="password" type="password"
+											class="form-control" name="password2" type="password"
 											placeholder="Enter password" id="registerPassword2" required /></input>
 									</div>
-									<button id="registerButton" class="my-sm-4 btn btn-outline-primary" type="submit">Submit</button>
+									<input id="registerButton"
+										class="my-sm-4 btn btn-outline-primary" type="button" value="Submit"></input>
 								</form>
 							</div>
 						</div>

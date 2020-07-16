@@ -56,7 +56,7 @@ public class Login extends HttpServlet {
 		// TODO Auto-generated method stub
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-		String path = "/WEB-INF/Login.html";
+		String path = "/Login.html";
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 

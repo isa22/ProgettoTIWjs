@@ -3,7 +3,7 @@
  */
 
 	//This function is used to send a request that contains a FormData obj 
-	function makeFormCall(method, url, formData, cback, reset = true) {
+	function makeFormCall(method, url, formData, cback) {
 	    var req = new XMLHttpRequest(); // visible by closure
 	    req.onreadystatechange = function() {
 	      cback(req)
@@ -16,13 +16,10 @@
 	    } else {
 	      req.send(formData);
 	    }
-	    if (formData !== null && reset === true) {
-	      formElement.reset();
-	    }
 	  }
 	
 	//This function is used to send a request that contains a URLSearchParams obj
-	function makeSearchCall(method, url, urlSearchParams, cback, reset = true) {
+	function makeSearchCall(method, url, urlSearchParams, cback) {
 	    var req = new XMLHttpRequest(); // visible by closure
 	    req.onreadystatechange = function() {
 	      cback(req)
@@ -32,8 +29,5 @@
 	      req.send();
 	    } else {
 	      req.send(urlSearchParams);
-	    }
-	    if (formData !== null && reset === true) {
-	      formElement.reset();
 	    }
 	  }
