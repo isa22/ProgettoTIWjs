@@ -11,10 +11,6 @@ public class User {
         return id;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -31,9 +27,7 @@ public class User {
         this.id = id;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+
 
     public void setUsername(String username) {
         this.username = username;
