@@ -56,8 +56,8 @@
     } else {
     	
     	 //report to user about form invalid content
+    	 if(!username.reportValidity()) return;
     	 password.reportValidity();
-    	 username.reportValidity();
 
       }
   });
@@ -79,12 +79,15 @@
 		  email.checkValidity() && password2.checkValidity() && repeatedPasswordOk && email) {
     	
 		  //retrieving data from forms and putting them in formData
-		  var formData = new FormData();
-		  formData.append("username",username.value);
+		  var formData = new FormData(document.getElementById("registerForm"));
+
+		  //var requestBody = "username=" +formData.get("username")+ "&password1=" + formData.get("password1") + "&password2=" + formData.get("password2") + "&email=" + formData.get("email");
+
+		  /*formData.append("username",username.value);
 		  formData.append("password1",password1.value);
 		  formData.append("password2",password2.value);
-		  formData.append("email",email.value);
-          
+		  formData.append("email",email.value);*/
+          console.log("Credentials: " + formData.get("username") + " " + formData.get("password1") + " " + formData.get("password2") + " " + formData.get("email"));
 		  //sending form to server
 		  makeFormCall("POST", 'Register', formData,
           
@@ -113,12 +116,17 @@
     } else {
     	
     	 //report to user about form invalid content
-          password2.reportValidity();
-          if(!repeatedPasswordOk) repeatedPasswordOk.setCustomValidity('La password non è stata ripetuta correttamente');
-          password1.reportValidity();
-          email.reportValidity();
-          if(!emailOk) email.setCustomValidity('Email errata');
-          username.reportValidity();
+          if(!username.reportValidity()) return;
+          if(!email.reportValidity()) return;
+          if(!emailOk) {
+              email.setCustomValidity('Email errata');
+              return;
+          }
+          if(!password1.reportValidity()) return;
+          if(!password2.reportValidity())return;
+          if(!repeatedPasswordOk) {
+              password1.setCustomValidity('La password non è stata ripetuta correttamente');
+          }
 
     }
   });
