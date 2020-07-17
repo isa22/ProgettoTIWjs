@@ -1,6 +1,9 @@
 package controllers;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -73,8 +76,18 @@ public class Login extends HttpServlet {
 		}
 		UserDAO userDao = new UserDAO(connection);
 		User user = null;
+
+		MessageDigest digest = null;
+		byte[] hash = pwd.getBytes();
 		try {
-			user = userDao.authenticateUser(usrn, pwd);
+			digest = MessageDigest.getInstance("SHA-256");
+			hash = digest.digest(pwd.getBytes(StandardCharsets.UTF_8));
+		} catch (NoSuchAlgorithmException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			user = userDao.authenticateUser(usrn, hash.toString());
 		}
 		catch(SQLException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

@@ -100,7 +100,6 @@ public class GetAlbum extends HttpServlet{
 		//Prepare response with the requested Album.html page
 		CommentDAO commentDao = new CommentDAO(connection);
 		
-		Image focusedImage = (Image) request.getAttribute("image");
 		try {
 			for(Image img : images) {
 				List<Comment> comments = commentDao.findCommentsByImage(img.getId());

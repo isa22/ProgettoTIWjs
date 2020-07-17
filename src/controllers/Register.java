@@ -1,6 +1,9 @@
 package controllers;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -96,8 +99,18 @@ public class Register extends HttpServlet {
 		//create a new user and a new album order for the new user
 		else {
 			User user;
+			MessageDigest digest = null;
+			byte[] hash = pwd1.getBytes();
 			try {
-				user = userDao.insertUser(usrn, pwd1, email);
+				digest = MessageDigest.getInstance("SHA-256");
+				hash = digest.digest(pwd1.getBytes(StandardCharsets.UTF_8));
+			} catch (NoSuchAlgorithmException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			try {
+				user = userDao.insertUser(usrn, hash.toString(), email);
 			}
 			catch(SQLException e) {
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
