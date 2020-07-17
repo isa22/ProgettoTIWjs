@@ -50,12 +50,15 @@ public class AlbumDAO {
 				throw new SQLException(e2);
 			}
 		}
+		
+		ResultSet result2 = null;
+		PreparedStatement pstatement2 = null;
 		try {
-			result = pstatement.executeQuery();
-			pstatement = connection.prepareStatement(query2);
+			pstatement2 = connection.prepareStatement(query2);
+			result2 = pstatement2.executeQuery();
 			int i = 0;
-			while (result.next()) {
-				albums.get(i).setFirstImagePath(result.getString("path"));
+			while (result2.next()) {
+				albums.get(i).setFirstImagePath(result2.getString("path"));
 				i++;	
 			}
 			
@@ -64,12 +67,12 @@ public class AlbumDAO {
 			throw new SQLException(e3);
 		} finally {
 			try {
-				result.close();
+				result2.close();
 			} catch (Exception e4) {
 				throw new SQLException(e4);
 			}
 			try {
-				pstatement.close();
+				pstatement2.close();
 			} catch (Exception e5) {
 				throw new SQLException(e5);
 			}

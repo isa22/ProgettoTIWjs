@@ -18,30 +18,29 @@ public class AlbumOrderDAO {
 	
 	//create a new album order for new users
 	public void createAlbumOrder(int userId, int albumNum) throws SQLException {
-
-		String query = "INSERT into dbtiwexam1920js.albumorder (album, user, order) VALUES(?, ?, ?)";
+		
+		String query = "INSERT into dbtiwexam1920js.albumorder (album, user, albumorder) VALUES(?, ?, ?)";
 		PreparedStatement pstatement = null;
-		for (int i = 1; i <= albumNum; i++) {
-			try {
+		try {
+			for (int i = 1; i <= albumNum; i++) {
 				pstatement = connection.prepareStatement(query);
 				pstatement.setInt(1, i);
 				pstatement.setInt(2, userId);
 				pstatement.setInt(3, i);
 				pstatement.executeUpdate();
 			}
-			catch (SQLException e) {
-			    e.printStackTrace();
-				throw new SQLException(e);
-
-			} finally {
-				try {
-					pstatement.close();
-				} catch (Exception e2) {
-					throw new SQLException(e2);
-				}
-			}		
-			
 		}
+		catch (SQLException e) {
+		    e.printStackTrace();
+			throw new SQLException(e);
+
+		} finally {
+			try {
+				pstatement.close();
+			} catch (Exception e2) {
+				throw new SQLException(e2);
+			}
+		}		
 	}
 	
 	//update album order after a submit of the client
