@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,19 +15,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import beans.Album;
+import beans.AlbumOrder;
+import beans.User;
 import dao.AlbumDAO;
+import dao.AlbumOrderDAO;
 import utils.ConnectionHandler;
 
 @WebServlet("/Home")
 public class GoToHomePage extends HttpServlet{
 	private static final long serialVersionUID = 1L;
-	private TemplateEngine templateEngine;
 	private Connection connection = null;
 	
 	public GoToHomePage() {
@@ -34,30 +35,26 @@ public class GoToHomePage extends HttpServlet{
 	}
 	
 	public void init() throws ServletException {
-		ServletContext servletContext = getServletContext();
-		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
-		templateResolver.setTemplateMode(TemplateMode.HTML);
-		this.templateEngine = new TemplateEngine();
-		this.templateEngine.setTemplateResolver(templateResolver);
-		templateResolver.setSuffix(".html");
 		connection = ConnectionHandler.getConnection(getServletContext());
 	}
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		String path;
+		
 		HttpSession session = request.getSession();
 
 		ServletContext servletContext = getServletContext();
-		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		if(session == null) {
+			String path;
 			path = servletContext.getContextPath() + "/Login";
-			response.sendRedirect(path);
+			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
+	        dispatcher.forward(request, response);
 		}
 
 		else {
 			AlbumDAO albumDAO = new AlbumDAO(connection);
+			AlbumOrderDAO orderDAO = new AlbumOrderDAO(connection);
 			List<Album> albums = new ArrayList<Album>();
 			
 			//retrieve the albums from DB
@@ -68,14 +65,31 @@ public class GoToHomePage extends HttpServlet{
 				System.out.println("Server Error: SQLException thrown by albumDAO.findAll");
 				return;
 			}
-			
-			//prepare response with the requested Home.html page
-			path = "/WEB-INF/Home.html";
-			
-			//set the variable for the thymeleaf template
-			ctx.setVariable("albums", albums);
+			User user = (User) session.getAttribute("user");
+			AlbumOrder albumOrder = user.getAlbumOrder();
+			List<Album> orderedAlbums = new ArrayList<Album>();
+			if (albumOrder !=null) {
+				for(Integer n : albumOrder.getOrder()) {
+					Album toRemove=null;
+					for(Album alb : albums) {
+						if(alb.getId() == n) {
+							orderedAlbums.add(alb);
+							toRemove = alb;
+						}
+					}
+					if(toRemove !=null)
+						albums.remove(toRemove);
+				}
+			}
+			else {
+				orderedAlbums = albums;
+			}
+			JSONObject resp = new JSONObject();
+			resp.append("albums", orderedAlbums);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(resp.toString());
 		}
-		templateEngine.process(path, ctx, response.getWriter());
 		
 	}
 	

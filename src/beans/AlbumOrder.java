@@ -3,13 +3,13 @@ package beans;
 import java.util.List;
 
 public class AlbumOrder {
-    private List order;
+    private List<Integer> order;
 
-    public List getOrder() {
+    public List<Integer> getOrder() {
         return order;
     }
 
-    public void setOrder(List order) {
+    public void setOrder(List<Integer> order) {
         this.order = order;
     }
 }

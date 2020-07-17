@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.json.JSONObject;
 
 import beans.User;
 import dao.AlbumDAO;
@@ -34,7 +35,15 @@ public class Register extends HttpServlet {
     public void init() throws ServletException {
 		connection = ConnectionHandler.getConnection(getServletContext());
 	}
-    
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		String path = "Login.html";
+		JSONObject json = new JSONObject();
+		json.append("redirect", path);
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(json.toString());
+	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
