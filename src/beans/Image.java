@@ -3,6 +3,8 @@ package beans;
 
 import java.sql.Timestamp;
 
+import java.util.List;
+
 public class Image {
 	private int id;
 	private int albumId;
@@ -10,6 +12,7 @@ public class Image {
 	private Timestamp date;
 	private String description;
 	private String path;
+	private List<Comment> comments;
 
 
 	public int getId() {
@@ -35,6 +38,9 @@ public class Image {
 	public String getPath() {
 		return path;
 	}
+	public List<Comment> getComments(){
+		return comments;
+	}
 
 	public void setId(int id) {
 		this.id = id;
@@ -58,5 +64,9 @@ public class Image {
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+	
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 }

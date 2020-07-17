@@ -21,9 +21,6 @@ import beans.AlbumOrder;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import dao.AlbumOrderDAO;
 import utils.ConnectionHandler;
@@ -35,7 +32,6 @@ import utils.ConnectionHandler;
 public class ChangeAlbumOrder extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private TemplateEngine templateEngine;
 	private Connection connection = null;
        
     /**
@@ -46,12 +42,6 @@ public class ChangeAlbumOrder extends HttpServlet {
     }
 
     public void init() throws ServletException {
-		ServletContext servletContext = getServletContext();
-		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
-		templateResolver.setTemplateMode(TemplateMode.HTML);
-		this.templateEngine = new TemplateEngine();
-		this.templateEngine.setTemplateResolver(templateResolver);
-		templateResolver.setSuffix(".html");
 		connection = ConnectionHandler.getConnection(getServletContext());
 	}
 	/**
