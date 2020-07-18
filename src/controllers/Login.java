@@ -96,7 +96,6 @@ public class Login extends HttpServlet {
 			return;
 		}
 
-		System.out.println("CULO");
 		if(user== null) {
 			//TODO credo che in caso di mancato match il db ritorni semplicemente zero risultati e non un'eccezione.
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
