@@ -1,7 +1,7 @@
 	(function() { // avoid variables ending up in the global scope
 
 	  // page components
-	  var imageDetails, imagesList, wizard,
+	  var imageDetails, imagesList, albumList,
 	    pageOrchestrator = new PageOrchestrator(); // main controller
 
 	  window.addEventListener("load", () => {
@@ -117,27 +117,34 @@
 
 		//List of images object //TODO uncompleted object
 		function ImagesList(_alert, _listcontainer, _listcontainerbody) {
+
+	  	//reference to alert element
 			this.alert = _alert;
+
+			//reference to albums container header //TODO may not be useful
 			this.listcontainer = _listcontainer;
+
+			//reference to albums container body
 			this.listcontainerbody = _listcontainerbody;
 
 			this.reset = function() {
 				this.listcontainer.style.visibility = "hidden";
-			}
+			};
 
+			//call server for album images and show them in the page
 			this.show = function(next) {
 				var self = this;
-				makeCall("GET", "GetPicturesData", null,
+				makeSearchCall("GET", "GetAlbum", null,
 					function(req) {
 						if (req.readyState == 4) {
 							var message = req.responseText;
 							if (req.status == 200) {
-								var picturesToShow = JSON.parse(req.responseText);
-								if (picturesToShow.length == 0) {
-									self.alert.textContent = "No pictures yet!";
+								var albumImages = JSON.parse(req.responseText);
+								if (albumImages.length == 0) {
+									self.alert.textContent = "No images yet!";
 									return;
 								}
-								self.update(picturesToShow); // self visible by closure
+								self.update(albumImages.images, 1); // self visible by closure
 								if (next) next(); // show the default element of the list if present
 							}
 						} else {
@@ -147,39 +154,52 @@
 				);
 			};
 
+			//update the page content about albums
+			this.update = function(arrayImages, page) {
 
-			this.update = function(arrayMissions) {
-				var elem, i, row, destcell, datecell, linkcell, anchor;
-				this.listcontainerbody.innerHTML = ""; // empty the table body
-				// build updated list
+				//html elements for showing the images
+				var card, imgPreview, cardBody, imgName;
+
+				//images per page
+				const imagesPerPage = 5;
+
+				this.listcontainerbody.innerHTML = ""; // empty image list body
 				var self = this;
-				arrayMissions.forEach(function(mission) { // self visible here, not this
-					row = document.createElement("tr");
-					destcell = document.createElement("td");
-					destcell.textContent = mission.destination;
-					row.appendChild(destcell);
-					datecell = document.createElement("td");
-					datecell.textContent = mission.startDate;
-					row.appendChild(datecell);
-					linkcell = document.createElement("td");
-					anchor = document.createElement("a");
-					linkcell.appendChild(anchor);
-					linkText = document.createTextNode("Show");
-					anchor.appendChild(linkText);
-					//anchor.missionid = mission.id; // make list item clickable
-					anchor.setAttribute('missionid', mission.id); // set a custom HTML attribute
-					anchor.addEventListener("click", (e) => { //TODO add the event for cursor on image
+
+				//arrayImages offsets
+				var startImageOffset = (page-1)*imagesPerPage;
+				var endImageOffset = startImageOffset + 5;
+
+				//showing 5 page images
+				arrayImages.slice(startImageOffset,endImageOffset).forEach(function(image) { // self visible here, not this
+					card = document.createElement("div");
+					card.setAttribute("class","card mb-4 shadow-sm");
+					imgPreview = document.createElement("img");
+					imgPreview.setAttribute("class","card-img-top thumbnailsec");
+					imgPreview.setAttribute("src",image.path);
+					cardBody = document.createElement("div");
+					cardBody.setAttribute("class","card-body");
+					imgName = document.createElement("p");
+					imgName.textContent = image.title;
+					card.appendChild(imgPreview);
+					card.appendChild(cardBody);
+					cardBody.appendChild(imgName);
+					card.setAttribute('imageId', image.id); // set a custom HTML attribute
+					card.addEventListener("click", (e) => { //TODO add the event for cursor on image
 						// dependency via module parameter
-						imageDetails.show(e.target.getAttribute("missionid")); // the list must know the details container
+						imageDetails.show({
+							title: image.title,
+							description: image.description,
+							comments: image.comments
+						}); // the list must know the details container
 					}, false);
-					anchor.href = "#";
-					row.appendChild(linkcell);
-					self.listcontainerbody.appendChild(row);
+					self.listcontainerbody.appendChild(card);
 				});
 				this.listcontainer.style.visibility = "visible";
 
-			}
+			};
 
+			//TODO understand what this function does
 			this.autoclick = function(missionId) {
 				var e = new Event("click");
 				var selector = "a[missionid='" + missionId + "']";
@@ -249,7 +269,7 @@
 	          }
 	        );
 	      });
-	    }
+	    };
 
 
 	    this.show = function(missionid) {
@@ -297,7 +317,7 @@
 	      this.expensecontainer.style.visibility = "hidden";
 	      this.expenseform.style.visibility = "hidden";
 	      this.closeform.style.visibility = "hidden";
-	    }
+	    };
 
 	    this.update = function(m) {
 	      this.date.textContent = m.startDate;
@@ -388,7 +408,7 @@
 	      fieldsets[1].hidden = true;
 	      fieldsets[2].hidden = true;
 
-	    }
+	    };
 
 	    this.changeStep = function(origin, destination) {
 	      origin.hidden = true;
@@ -398,18 +418,23 @@
 
 	  //TODO uncompleted object
 	  function PageOrchestrator() {
-	    var alertContainer = document.getElementById("id_alert");
+	    var alertContainer = document.getElementById("alertMessage");
 	    this.start = function() {
-	      personalMessage = new PersonalMessage(sessionStorage.getItem('username'),
-	        document.getElementById("id_username"));
+	      var personalMessage = new PersonalMessage(sessionStorage.getItem('username'),
+	        document.getElementById("personalMessage"));
 	      personalMessage.show();
+
+	      albumList = new AlbumsList(
+			alertContainer,
+			document.getElementById("albumsContainer"),
+			document.getElementById("albumsBody"));
 
 	      imagesList = new ImagesList(
 	        alertContainer,
-	        document.getElementById("id_listcontainer"),
-	        document.getElementById("id_listcontainerbody"));
+	        document.getElementById("imagesContainer"),
+	        document.getElementById("imagesBody"));
 
-	      imageDetails = new ImageDetails({ // many parameters, wrap them in an
+	      /*imageDetails = new ImageDetails({ // many parameters, wrap them in an
 	        // object
 	        alert: alertContainer,
 	        detailcontainer: document.getElementById("id_detailcontainer"),
@@ -428,10 +453,7 @@
 	        accomodation: document.getElementById("id_accomodation"),
 	        transportation: document.getElementById("id_transportation")
 	      });
-	      imageDetails.registerEvents(this);
-
-	      wizard = new Wizard(document.getElementById("id_createmissionform"), alertContainer);
-	      wizard.registerEvents(this);
+	      imageDetails.registerEvents(this);*/
 
 	      document.querySelector("a[href='Logout']").addEventListener('click', () => {
 	        window.sessionStorage.removeItem('username');
@@ -446,7 +468,6 @@
 	      imagesList.show(function() {
 	        imagesList.autoclick(currentMission);
 	      }); // closure preserves visibility of this
-	      wizard.reset();
 	    };
 	  }
 	})();
