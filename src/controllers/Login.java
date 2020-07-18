@@ -95,12 +95,19 @@ public class Login extends HttpServlet {
 			System.out.println("Server Error: SQLException thrown by userDAO.authenticateUser");
 			return;
 		}
+
+		System.out.println("CULO");
 		if(user== null) {
 			//TODO credo che in caso di mancato match il db ritorni semplicemente zero risultati e non un'eccezione.
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println("User non trovato");
+			System.out.println("User not found");
+			return;
 		}
 		else {
 			AlbumOrderDAO orderDao = new AlbumOrderDAO(connection);
 			AlbumOrder order = null;
+			System.out.println(user);
 			try {
 				order = orderDao.getAlbumOrder(user.getId());
 			}
@@ -117,12 +124,14 @@ public class Login extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
+			
+			//forward the request toward goToHomePage servlet
+			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/Home");
+		    dispatcher.forward(request, response);
 		}
 		
 			
-		//forward the request toward goToHomePage servlet
-		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/Home");
-	    dispatcher.forward(request, response);
+		
 		
 	}
 	
