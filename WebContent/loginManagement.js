@@ -97,6 +97,7 @@
             var message = req.responseText;
             switch (req.status) {
               case 200:
+                  console.log("redirect to home");
             	sessionStorage.setItem('username', message);
                 window.location.href = "Home.html";
                 break;
@@ -119,14 +120,14 @@
           if(!username.reportValidity()) return;
           if(!email.reportValidity()) return;
           if(!emailOk) {
-              email.setCustomValidity('Email errata');
+              //email.setCustomValidity('Email errata');
               return;
           }
-          if(!password1.reportValidity()) return;
-          if(!password2.reportValidity())return;
           if(!repeatedPasswordOk) {
               password1.setCustomValidity('La password non è stata ripetuta correttamente');
           }
+          if(!password1.reportValidity()) return;
+          if(!password2.reportValidity())return;
 
     }
   });
