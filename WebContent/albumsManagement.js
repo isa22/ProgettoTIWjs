@@ -43,7 +43,7 @@
 	    //call server for albums data and show them in the page
 	    this.show = function(next) {
 	      var self = this;
-	      makeSearchCall("GET", "GetAlbumsData", null,
+	      makeSearchCall("GET", "GetHomePage", null,
 	        function(req) {
 	          if (req.readyState == 4) {
 	            var message = req.responseText;
@@ -65,23 +65,35 @@
 
 		//update the page content about albums
 	    this.update = function(arrayAlbums) {
-	      var card, cardClass, imgLink;
+	      var card, cardClass, imgLink, firstImage, body, name;
 	      this.listcontainerbody.innerHTML = ""; // empty the card body
 	      // build updated list
 	      var self = this;
 	      arrayAlbums.forEach(function(album) { // self visible here, not this
 	        card = document.createElement("div");
-	        cardClass = document.createAttribute("class");
-	        cardClass.value = "card mb-4 shadow-sm";
-	        card.attributes.setNamedItem(cardClass);
+	        card.setAttribute("class", "card mb-4 shadow-sm");
 	        imgLink = document.createElement("a");
 	        card.appendChild(imgLink);
+	        imgLink.setAttribute('albumId', album.id);
+	        firstImage = document.createElement("img");
+	        firstImage.setAttribute("src", album.firstImagePath);
+	        firstImage.setAttribute("class", "card-img-top thumbnailsec");
+	        firstImage.setAttribute("id", "albumImage");
+	        imgLink.appendChild(firstImage);
+	        cardbody = document.createElement("div");
+	        cardbody.setAttribute("class", "card-body");
+	        card.appendChild(body);
+	        title = document.createElement("h5");
+	        title.setAttribute("id", "albumName");
+	        title.textContent = album.title;
+	        body.appendChild(title);
+	        
 
 	        //TODO finish the html element
 	        //...
 
-			  imgLink.setAttribute('albumId', album.id);
-			  imgLink.addEventListener("click", (e) => {
+			  
+			  card.addEventListener("click", (e) => {
 	          // image clicked
 	          imageDetails.show(e.target.getAttribute("albumId")); // the list must know the details container
 	        }, false);
