@@ -18,6 +18,13 @@
 		<div class="card-body" id="alertMessage"></div>
 		</div>
 	</div>
+	
+	<!-- Alert bar -->
+	<div class="row">
+		<div class="card mb-4 shadow-sm">
+		<div class="card-body" id="personalMessage"></div>
+		</div>
+	</div>
 
 	<main role="main" class="container">
 
@@ -25,21 +32,19 @@
 			<h1>Albums</h1>
 		</section>
 
-		<div class="album py-5 bg-light">
-			<div class="row" id="albumsRow">
-				<div class="col-md-4">
-					<div class="card mb-4 shadow-sm">
-						<a href="#"> <img class="card-img-top thumbnailsec" id="albumImage" src="#"
-							alt="Card image cap">
-						</a>
-						<div class="card-body">
-							<a id="albumName">Album Name</a>
-						</div>
-					</div>
-				</div>
+		<!-- Albums list -->
+		<div class="album py-5 bg-light" id="albumsContainer">
+				<div class="col-md-10" id="albumsBody">
+				<!-- albums loaded by js file-->
 			</div>
 		</div>
-
+		
+		<!-- Images list -->
+		<div class="album py-5 bg-light" id="imagesContainer">
+				<div class="col-md-10" id="imagesBody">
+				<!-- images loaded by js file-->
+			</div>
+		</div>
 	</main>
 
 	<!-- Footer -->
