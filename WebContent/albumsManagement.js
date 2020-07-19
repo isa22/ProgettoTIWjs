@@ -200,11 +200,11 @@
 			};
 
 			//TODO understand what this function does
-			this.autoclick = function(missionId) {
+			this.autoclick = function(albumId) {
 				var e = new Event("click");
-				var selector = "a[missionid='" + missionId + "']";
+				var selector = "a[albumid='" + albumId + "']";
 				var anchorToClick =
-					(missionId) ? document.querySelector(selector) : this.listcontainerbody.querySelectorAll("a")[0];
+					(albumId) ? document.querySelector(selector) : this.listcontainerbody.querySelectorAll("a")[0];
 				if (anchorToClick) anchorToClick.dispatchEvent(e);
 			}
 
@@ -213,7 +213,7 @@
 	  //Image details object //TODO uncompleted object
 	  function ImageDetails(options) {
 	    this.alert = options['alert'];
-	    this.detailcontainer = options['detailcontainer'];
+	    this.descriptioncontainer = options['descriptioncontainer'];
 	    this.expensecontainer = options['expensecontainer'];
 	    this.expenseform = options['expenseform'];
 	    this.closeform = options['closeform'];
@@ -282,7 +282,7 @@
 	              var mission = JSON.parse(req.responseText);
 	              self.update(mission); // self is the object on which the function
 	              // is applied
-	              self.detailcontainer.style.visibility = "visible";
+	              self.descriptioncontainer.style.visibility = "visible";
 	              switch (mission.status) {
 	                case "OPEN":
 	                  self.expensecontainer.style.visibility = "hidden";
@@ -313,7 +313,7 @@
 
 
 	    this.reset = function() {
-	      this.detailcontainer.style.visibility = "hidden";
+	      this.albumscontainer.style.visibility = "hidden";
 	      this.expensecontainer.style.visibility = "hidden";
 	      this.expenseform.style.visibility = "hidden";
 	      this.closeform.style.visibility = "hidden";
@@ -437,11 +437,10 @@
 	      /*imageDetails = new ImageDetails({ // many parameters, wrap them in an
 	        // object
 	        alert: alertContainer,
-	        detailcontainer: document.getElementById("id_detailcontainer"),
-	        expensecontainer: document.getElementById("id_expensecontainer"),
-	        expenseform: document.getElementById("id_expenseform"),
-	        closeform: document.getElementById("id_closeform"),
-	        date: document.getElementById("id_date"),
+	        descriptioncontainer: document.getElementById("descriptioncontainer"),
+	        commentscontainer: document.getElementById("commentscontainer"),
+	        commentform: document.getElementById("commentform"),
+	        date: document.getElementById("date"),
 	        destination: document.getElementById("id_destination"),
 	        status: document.getElementById("id_status"),
 	        description: document.getElementById("id_description"),
@@ -455,16 +454,16 @@
 	      });
 	      imageDetails.registerEvents(this);*/
 
-	      document.querySelector("a[href='Logout']").addEventListener('click', () => {
+	      /*document.querySelector("a[href='Logout']").addEventListener('click', () => {
 	        window.sessionStorage.removeItem('username');
-	      })
+	      })*/
 	    };
 
 
 	    this.refresh = function(currentMission) {
 	      alertContainer.textContent = "";
 	      imagesList.reset();
-	      imageDetails.reset();
+	      //imageDetails.reset();
 	      imagesList.show(function() {
 	        imagesList.autoclick(currentMission);
 	      }); // closure preserves visibility of this
