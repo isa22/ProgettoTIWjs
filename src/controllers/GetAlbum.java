@@ -56,7 +56,7 @@ public class GetAlbum extends HttpServlet{
 		ImageDAO imageDAO = new ImageDAO(connection);
 		List<Image> images = new ArrayList<Image>();
 		AlbumDAO albumDAO = new AlbumDAO(connection);
-		Album album;
+		Album album = null;
 		
 		//Get http request parameters and retrieve data for pagination from DB
 		int albumId;
@@ -67,22 +67,6 @@ public class GetAlbum extends HttpServlet{
 			System.out.println("Server Error: request parameter albumId hasn't been parsed correctly");
 			return;
 		}
-		int totImages;
-		try {
-			totImages = imageDAO.getNumberOfImagesByAlbum(albumId); 
-		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile recuperare le immagini dell'album");
-			System.out.println("Server Error: SQLException thrown by imageDAO.getNumberOfImagesByAlbum");
-			return;
-		}
-		int totPages = (int) Math.ceil((double)totImages/imagesPerPage);
-		int page; 
-		try{page = limitPageInsideRange(Integer.parseInt(request.getParameter("page")),totPages);}catch(NumberFormatException e) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Richiesta non valida");
-			System.out.println("Server Error: request parameter page hasn't been parsed correctly");
-			return;
-		}
-		
 		//Retrieve images from DB 
 		try {
 			//TODO change imageDAO parameters
@@ -114,12 +98,17 @@ public class GetAlbum extends HttpServlet{
 			System.out.println("Server Error: SQLException thrown by commentDao.findCommentsByImage");
 			return;
 		}
+		if(album !=null)
+			album.setImages(images);
+		else {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "L'album richiesto non esiste");
+			System.out.println("Server Error: SQLException thrown by albumDAO.getTitleOfAlbum");
+		}
 		
 		//container for album data to group data in one json
-		AlbumData albumData= new AlbumData(images,album.getTitle(),album.getId());
 		Gson gson = new GsonBuilder()
 				   .setDateFormat("yyyy MMM dd").create();
-		String json = gson.toJson(albumData);
+		String json = gson.toJson(album);
 		
 		
 		response.setStatus(HttpServletResponse.SC_OK);

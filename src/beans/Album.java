@@ -1,12 +1,14 @@
 package beans;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public class Album {
 	private int id;
 	private String title;
 	private Timestamp date;
 	private String firstImagePath;
+	private List<Image> images;
 	
 	public int getId() {
 		return id;
@@ -38,5 +40,13 @@ public class Album {
 	
 	public void setFirstImagePath(String path) {
 		this.firstImagePath = path;
+	}
+	
+	public List<Image> getImages() {
+		return images;
+	}
+	
+	public void setImages(List<Image> images) {
+		this.images = images;
 	}
 }
