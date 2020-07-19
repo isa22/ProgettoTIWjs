@@ -16,18 +16,21 @@ import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import beans.Album;
 import beans.Comment;
 import beans.Image;
 import dao.AlbumDAO;
 import dao.CommentDAO;
 import dao.ImageDAO;
+import utils.AlbumData;
 import utils.ConnectionHandler;
 
 @WebServlet("/Album")
 public class GetAlbum extends HttpServlet{
 	private static final long serialVersionUID = 1L;
-	private static final JSONObject resp  = null;
 	private Connection connection = null;
 	private final int imagesPerPage = 5;
 	
@@ -112,13 +115,16 @@ public class GetAlbum extends HttpServlet{
 			return;
 		}
 		
-		resp.append("images", images);
-		resp.append("albumTitle", album.getTitle());
-		resp.append("albumId", album.getId());
+		//container for album data to group data in one json
+		AlbumData albumData= new AlbumData(images,album.getTitle(),album.getId());
+		Gson gson = new GsonBuilder()
+				   .setDateFormat("yyyy MMM dd").create();
+		String json = gson.toJson(albumData);
+		
 		response.setStatus(HttpServletResponse.SC_OK);
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(resp.toString());
+		response.getWriter().write(json);
 	}
 	
 	

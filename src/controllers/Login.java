@@ -124,7 +124,7 @@ public class Login extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
-			response.getWriter().write(response.toString());
+			response.getWriter().println(usrn);
 
 			
 			//forward the request toward goToHomePage servlet

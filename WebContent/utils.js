@@ -19,18 +19,15 @@
 	    }
 	  }
 	
-	//This function is used to send a request that contains a URLSearchParams obj
-	function makeSearchCall(method, url, urlSearchParams, cback) {
+	//This function is used to send a request that does not need to upload form data
+	//(the previous function can be used as this one, with "formData" parameter equal to null)
+	function makeSearchCall(method, url, cback) {
 	    var req = new XMLHttpRequest(); // visible by closure
 	    req.onreadystatechange = function() {
 	      cback(req)
 	    }; // closure
 	    req.open(method, url);
-	    if (urlSearchParams == null) {
-	      req.send();
-	    } else {
-	      req.send(urlSearchParams);
-	    }
+	    req.send();
 	  }
 	
 	//get context path
