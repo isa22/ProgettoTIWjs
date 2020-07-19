@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.catalina.tribes.util.Arrays;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONObject;
 import utils.ConnectionHandler;
@@ -87,7 +88,7 @@ public class Login extends HttpServlet {
 			e1.printStackTrace();
 		}
 		try {
-			user = userDao.authenticateUser(usrn, hash.toString());
+			user = userDao.authenticateUser(usrn, Arrays.toString(hash));
 		}
 		catch(SQLException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

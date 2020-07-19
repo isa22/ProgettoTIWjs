@@ -35,6 +35,6 @@ version="3.1">
     <url-pattern>/Home.html</url-pattern>
   </filter-mapping> 
   <welcome-file-list>
-    <welcome-file>Login.html</welcome-file>
+    <welcome-file>Home.html</welcome-file>
   </welcome-file-list>
 </web-app>
