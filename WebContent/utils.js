@@ -26,9 +26,14 @@
 	      cback(req)
 	    }; // closure
 	    req.open(method, url);
-	    if (formData == null) {
+	    if (urlSearchParams == null) {
 	      req.send();
 	    } else {
 	      req.send(urlSearchParams);
 	    }
 	  }
+	
+	//get context path
+	function getContextPath() {
+		   return window.location.pathname.substring(0, window.location.pathname.indexOf("/",2));
+		}

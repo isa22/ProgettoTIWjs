@@ -5,7 +5,7 @@
 <link href="css/bootstrap.css" rel="stylesheet">
 <link href="css/image.css" rel="stylesheet">
 <script src="utils.js" charset="utf-8" defer></script>
-<script src="albumManagement.js" charset="utf-8" defer></script>
+<script src="albumsManagement.js" charset="utf-8" defer></script>
 </head>
 
 <body>
@@ -14,36 +14,41 @@
 		<div class="d-flex justify-content-between"></div>
 	</header>
 	
-	<!-- Alert bar -->
-	<div class="row">
-		<div class="card mb-4 shadow-sm">
-		<div class="card-body" id="alertMessage"></div>
-		</div>
-	</div>
-	
-	<!-- Alert bar -->
-	<div class="row">
-		<div class="card mb-4 shadow-sm">
-		<div class="card-body" id="personalMessage"></div>
-		</div>
-	</div>
 
 	<main role="main" class="container">
 
 		<section class="jumbotron text-center">
 			<h1>Albums</h1>
 		</section>
+		
+		<!-- Alert bar -->
+	<div class="col md-8">
+		<div class="card shadow-sm ml-4 mr-4">
+					<div class="card-body">
+					<p class="mt-sm-2 mb-sm-2 text-danger" id="alertMessage"></p>
+					</div>
+				</div>
+	</div>
+	
+	<!-- message bar -->
+	<div class="col md-lg-2">
+		<div class="card shadow-sm ml-4 mr-4">
+					<div class="card-body">
+					<h5>Username: </h5><p class="mt-sm-2 mb-sm-2" id="personalMessage"></p>
+					</div>
+				</div>
+	</div>
 
 		<!-- Albums list -->
 		<div class="album py-5 bg-light" id="albumsContainer">
-				<div class="col-md-10" id="albumsBody">
+				<div class="col-md-5" id="albumsBody">
 				<!-- albums loaded by js file-->
 			</div>
 		</div>
 		
 		<!-- Images list -->
 		<div class="album py-5 bg-light" id="imagesContainer">
-				<div class="col-md-10" id="imagesBody">
+				<div class="col-md-5" id="imagesBody">
 				<!-- images loaded by js file-->
 			</div>
 		</div>

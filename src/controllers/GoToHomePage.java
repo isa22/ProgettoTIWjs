@@ -17,6 +17,9 @@ import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import beans.Album;
 import beans.AlbumOrder;
 import beans.User;
@@ -76,11 +79,16 @@ public class GoToHomePage extends HttpServlet{
 		else {
 			orderedAlbums = albums;
 		}
-		JSONObject resp = new JSONObject();
-		resp.append("albums", orderedAlbums);
+		
+		Gson gson = new GsonBuilder()
+				   .setDateFormat("yyyy MMM dd").create();
+		String json = gson.toJson(orderedAlbums);
+		
+		//JSONObject resp = new JSONObject();
+		//resp.append("albums", orderedAlbums);
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(resp.toString());
+		response.getWriter().write(json);
 		
 	}
 	

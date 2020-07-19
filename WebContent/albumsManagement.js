@@ -43,8 +43,8 @@
 	    //call server for albums data and show them in the page
 	    this.show = function(next) {
 	      var self = this;
-	      makeSearchCall("GET", "GetHomePage", null,
-	        function(req) {
+	      makeSearchCall("GET", "Home", null,
+	        /*function(req) {
 	          if (req.readyState == 4) {
 	            var message = req.responseText;
 	            if (req.status == 200) {
@@ -59,34 +59,57 @@
 	          } else {
 				  self.alert.textContent = message;
 			  }
-	        }
+	        }*/
+			  function(req) {
+				  if (req.readyState == XMLHttpRequest.DONE) {
+					  var message = req.responseText;
+					  switch (req.status) {
+						  case 200:
+							  console.log("Response = " + message);
+							  var albumsToShow = JSON.parse(req.responseText);
+							  if (albumsToShow.length == 0) {self.alert.textContent = "No albums found!"; return;}
+							  self.update(albumsToShow); // self visible by closure
+							  if (next) next(); // show the default element of the list if present
+							  break;
+						  case 400: // bad request
+							  self.alert.textContent = message;
+							  break;
+						  case 401: // unauthorized
+							  self.alert.textContent = message;
+							  break;
+						  case 500: // server error
+							  self.alert.textContent = message;
+							  break;
+					  }
+				  }
+			  }
 	      );
 	    };
 
 		//update the page content about albums
 	    this.update = function(arrayAlbums) {
-	      var card, cardClass, imgLink, firstImage, body, name;
+	      var card, cardBody, imgLink, firstImage, title;
 	      this.listcontainerbody.innerHTML = ""; // empty the card body
 	      // build updated list
 	      var self = this;
 	      arrayAlbums.forEach(function(album) { // self visible here, not this
 	        card = document.createElement("div");
-	        card.setAttribute("class", "card mb-4 shadow-sm");
+	        card.setAttribute("class", "card mb-4 mx-auto d-block shadow-sm");
 	        imgLink = document.createElement("a");
 	        card.appendChild(imgLink);
 	        imgLink.setAttribute('albumId', album.id);
 	        firstImage = document.createElement("img");
-	        firstImage.setAttribute("src", album.firstImagePath);
+	        firstImage.setAttribute("src", getContextPath() + album.firstImagePath);
 	        firstImage.setAttribute("class", "card-img-top thumbnailsec");
-	        firstImage.setAttribute("id", "albumImage");
+	        firstImage.setAttribute("id", album.id);
 	        imgLink.appendChild(firstImage);
-	        cardbody = document.createElement("div");
-	        cardbody.setAttribute("class", "card-body");
-	        card.appendChild(body);
+	        cardBody = document.createElement("div");
+	        cardBody.setAttribute("class", "card-body");
+	        card.appendChild(cardBody);
 	        title = document.createElement("h5");
 	        title.setAttribute("id", "albumName");
 	        title.textContent = album.title;
-	        body.appendChild(title);
+	        cardBody.appendChild(title);
 	        
 
 	        //TODO finish the html element
@@ -132,9 +155,9 @@
 			};
 
 			//call server for album images and show them in the page
-			this.show = function(next) {
+			this.show = function(albumId,page) {
 				var self = this;
-				makeSearchCall("GET", "GetAlbum", null,
+				makeSearchCall("GET", "GetAlbum", "albumId="+albumId+"&page="+page,
 					function(req) {
 						if (req.readyState == 4) {
 							var message = req.responseText;
@@ -455,19 +478,20 @@
 	      });
 	      imageDetails.registerEvents(this);*/
 
-	      document.querySelector("a[href='Logout']").addEventListener('click', () => {
+	      /*document.querySelector("a[href='Logout']").addEventListener('click', () => {
 	        window.sessionStorage.removeItem('username');
-	      })
+	      })*/
 	    };
 
 
 	    this.refresh = function(currentMission) {
 	      alertContainer.textContent = "";
 	      imagesList.reset();
-	      imageDetails.reset();
-	      imagesList.show(function() {
+	      albumList.show();
+	      //imageDetails.reset();
+	      /*imagesList.show(function() {
 	        imagesList.autoclick(currentMission);
-	      }); // closure preserves visibility of this
+	      });*/ // closure preserves visibility of this
 	    };
 	  }
 	})();
