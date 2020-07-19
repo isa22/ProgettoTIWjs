@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.json.JSONObject;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -25,14 +23,12 @@ import beans.Image;
 import dao.AlbumDAO;
 import dao.CommentDAO;
 import dao.ImageDAO;
-import utils.AlbumData;
 import utils.ConnectionHandler;
 
 @WebServlet("/Album")
 public class GetAlbum extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
-	private final int imagesPerPage = 5;
 	
 	public GetAlbum() {
 		super();
@@ -132,10 +128,4 @@ public class GetAlbum extends HttpServlet{
 		}
 	}
 	
-	/**This method returns the page number inside the range of possible pages*/ 
-	private int limitPageInsideRange(int page, int totPages) {
-		if(page<1) return 1;
-		if(page > totPages) return totPages;
-		return page;
-	}
 }
