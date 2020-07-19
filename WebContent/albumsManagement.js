@@ -45,7 +45,7 @@
 	    //call server for albums data and show them in the page
 	    this.show = function(next) {
 	      var self = this;
-	      makeSearchCall("GET", "Home", null,
+	      makeSearchCall("GET", "Home",
 	        /*function(req) {
 	          if (req.readyState == 4) {
 	            var message = req.responseText;
@@ -224,7 +224,7 @@
 				var searchParams = new URLSearchParams();
 				searchParams.append("albumId", albumId);
 				searchParams.append("page", page);
-				makeSearchCall("GET", "Album", searchParams,
+				makeSearchCall("GET", "Album?albumId="+albumId+"&page="+page,
 					/*function(req) {
 						if (req.readyState == 4) {
 							var message = req.responseText;
