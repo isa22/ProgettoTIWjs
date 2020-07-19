@@ -86,7 +86,7 @@ public class GetAlbum extends HttpServlet{
 		//Retrieve images from DB 
 		try {
 			//TODO change imageDAO parameters
-			images = imageDAO.findImagesByAlbum(albumId,page);
+			images = imageDAO.findImagesByAlbum(albumId);
 		} catch (SQLException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile recuperare le immagini dell'album");
 			System.out.println("Server Error: SQLException thrown by imageDAO.findImagesByAlbum");
@@ -120,6 +120,7 @@ public class GetAlbum extends HttpServlet{
 		Gson gson = new GsonBuilder()
 				   .setDateFormat("yyyy MMM dd").create();
 		String json = gson.toJson(albumData);
+		
 		
 		response.setStatus(HttpServletResponse.SC_OK);
 		response.setContentType("application/json");
