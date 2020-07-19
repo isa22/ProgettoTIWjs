@@ -18,7 +18,8 @@ public class AlbumDAO {
 
 	public List<Album> findAll() throws SQLException {
 		List<Album> albums = new ArrayList<Album>();
-		String query = "SELECT * from dbtiwexam1920js.album";
+		List<String> paths = new ArrayList<String>();
+		String query = "SELECT * from dbtiwexam1920js.album order by date desc";
 		String query2 = "SELECT path from dbtiwexam1920js.image group by album";
 		
 		ResultSet result = null;
@@ -56,10 +57,8 @@ public class AlbumDAO {
 		try {
 			pstatement2 = connection.prepareStatement(query2);
 			result2 = pstatement2.executeQuery();
-			int i = 0;
 			while (result2.next()) {
-				albums.get(i).setFirstImagePath(result2.getString("path"));
-				i++;	
+				paths.add(result.getString("path"));
 			}
 			
 		} catch (SQLException e3) {
@@ -76,6 +75,10 @@ public class AlbumDAO {
 			} catch (Exception e5) {
 				throw new SQLException(e5);
 			}
+		}
+		for(int i = 0; i<albums.size(); i++) {
+			albums.get(i).setFirstImagePath(paths.get(albums.get(i).getId()-1));
+			
 		}
 		return albums;
 	}
