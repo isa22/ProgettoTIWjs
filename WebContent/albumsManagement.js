@@ -40,6 +40,8 @@
 	      this.listcontainer.style.visibility = "hidden";
 	    };
 
+	    
+	    
 	    //call server for albums data and show them in the page
 	    this.show = function(next) {
 	      var self = this;
@@ -92,16 +94,78 @@
 	      this.listcontainerbody.innerHTML = ""; // empty the card body
 	      // build updated list
 	      var self = this;
+	      
+	      
+	      function sortable(rootEl, onUpdate) {
+			   var dragEl;
+			   
+			   // Making all siblings movable
+			   [].slice.call(rootEl.children).forEach(function (itemEl) {
+			       itemEl.draggable = true;
+			   });
+			   
+			   // Function responsible for sorting
+			   function _onDragOver(evt) {
+			       evt.preventDefault();
+			       evt.dataTransfer.dropEffect = 'move';
+			      
+			       var target = evt.target;
+			       if (target && target !== dragEl && target.nodeName == 'LI') {
+			           // Sorting
+			           rootEl.insertBefore(dragEl, target.nextSibling || target);
+			       }
+			   }
+			   
+			   // End of sorting
+			   function _onDragEnd(evt){
+			       evt.preventDefault();
+			      
+			       dragEl.classList.remove('ghost');
+			       rootEl.removeEventListener('dragover', _onDragOver, false);
+			       rootEl.removeEventListener('dragend', _onDragEnd, false);
+
+
+			       // Notification about the end of sorting
+			       onUpdate(dragEl);
+			   }
+			   
+			   // Sorting starts
+			   rootEl.addEventListener('dragstart', function (evt){
+			       dragEl = evt.target; // Remembering an element that will be moved
+			       
+			       // Limiting the movement type
+			       evt.dataTransfer.effectAllowed = 'move';
+			       evt.dataTransfer.setData('Text', dragEl.textContent);
+
+
+			       // Subscribing to the events at dnd
+			       rootEl.addEventListener('dragover', _onDragOver, false);
+			       rootEl.addEventListener('dragend', _onDragEnd, false);
+
+
+			       setTimeout(function () {
+			           // If this action is performed without setTimeout, then
+			           // the moved object will be of this class.
+			           dragEl.classList.add('ghost');
+			       }, 0)
+			   }, false);
+			   
+			   // Using                    
+		      sortable(arrayAlbums, function (album) {
+		         console.log(album);
+		      });
+		   }
+	      
 	      arrayAlbums.forEach(function(album) { // self visible here, not this
 	        card = document.createElement("div");
 	        card.setAttribute("class", "card mb-4 mx-auto d-block shadow-sm");
 	        imgLink = document.createElement("a");
+	        card.setAttribute("id", album.id);
 	        card.appendChild(imgLink);
 	        imgLink.setAttribute('albumId', album.id);
 	        firstImage = document.createElement("img");
 	        firstImage.setAttribute("src", getContextPath() + album.firstImagePath);
 	        firstImage.setAttribute("class", "card-img-top thumbnailsec");
-	        firstImage.setAttribute("id", album.id);
 	        imgLink.appendChild(firstImage);
 	        cardBody = document.createElement("div");
 	        cardBody.setAttribute("class", "card-body");
@@ -111,14 +175,14 @@
 	        title.textContent = album.title;
 	        cardBody.appendChild(title);
 	        
-
+	        
 	        //TODO finish the html element
 	        //...
 
 			  
 			  card.addEventListener("click", (e) => {
 	          // image clicked
-	          imageDetails.show(e.target.getAttribute("albumId")); // the list must know the details container
+	          imagesList.show(e.target.getAttribute("id"), 1); // the list must know the details container
 	        }, false);
 	        imgLink.href = "#";
 	        self.listcontainerbody.appendChild(card);
@@ -157,8 +221,11 @@
 			//call server for album images and show them in the page
 			this.show = function(albumId,page) {
 				var self = this;
-				makeSearchCall("GET", "GetAlbum", "albumId="+albumId+"&page="+page,
-					function(req) {
+				var searchParams = new URLSearchParams();
+				searchParams.append("albumId", albumId);
+				searchParams.append("page", page);
+				makeSearchCall("GET", "Album", searchParams,
+					/*function(req) {
 						if (req.readyState == 4) {
 							var message = req.responseText;
 							if (req.status == 200) {
@@ -173,8 +240,35 @@
 						} else {
 							self.alert.textContent = message;
 						}
-					}
-				);
+					}*/
+				
+				function(req) {
+				  if (req.readyState == XMLHttpRequest.DONE) {
+					  var message = req.responseText;
+					  switch (req.status) {
+						  case 200:
+							  var albumImages = JSON.parse(req.responseText);
+								if (albumImages.length == 0) {
+									self.alert.textContent = "No images yet!";
+									return;
+								}
+								self.update(albumImages.images, 1); // self visible by closure
+								//if (next) next(); // show the default element of the list if present
+							  break;
+						  case 400: // bad request
+							  self.alert.textContent = message;
+							  break;
+						  case 401: // unauthorized
+							  self.alert.textContent = message;
+							  break;
+						  case 500: // server error
+							  self.alert.textContent = message;
+							  break;
+					  }
+				  }
+			  }
+			
+			);
 			};
 
 			//update the page content about albums
@@ -357,87 +451,11 @@
 	    }
 	  }
 
-	   //TODO uncompleted object //TODO understand what this object does
-	  function Wizard(wizardId, alert) {
-	    // minimum date the user can choose, in this case now and in the future
-	    var now = new Date(),
-	      formattedDate = now.toISOString().substring(0, 10);
-	    this.wizard = wizardId;
-	    this.alert = alert;
-
-	    this.wizard.querySelector('input[type="date"]').setAttribute("min", formattedDate);
-
-	    this.registerEvents = function(orchestrator) {
-	      // Manage previous and next buttons
-	      Array.from(this.wizard.querySelectorAll("input[type='button'].next,  input[type='button'].prev")).forEach(b => {
-	        b.addEventListener("click", (e) => { // arrow function preserve the
-	          // visibility of this
-	          var eventfieldset = e.target.closest("fieldset"),
-	            valid = true;
-	          if (e.target.className == "next") {
-	            for (i = 0; i < eventfieldset.elements.length; i++) {
-	              if (!eventfieldset.elements[i].checkValidity()) {
-	                eventfieldset.elements[i].reportValidity();
-	                valid = false;
-	                break;
-	              }
-	            }
-	          }
-	          if (valid) {
-	            this.changeStep(e.target.parentNode, (e.target.className === "next") ? e.target.parentNode.nextElementSibling : e.target.parentNode.previousElementSibling);
-	          }
-	        }, false);
-	      });
-
-	      // Manage submit button
-	      this.wizard.querySelector("input[type='button'].submit").addEventListener('click', (e) => {
-	        var eventfieldset = e.target.closest("fieldset"),
-	          valid = true;
-	        for (i = 0; i < eventfieldset.elements.length; i++) {
-	          if (!eventfieldset.elements[i].checkValidity()) {
-	            eventfieldset.elements[i].reportValidity();
-	            valid = false;
-	            break;
-	          }
-	        }
-
-	        if (valid) {
-	          var self = this;
-	          makeCall("POST", 'CreateMission', e.target.closest("form"),
-	            function(req) {
-	              if (req.readyState == XMLHttpRequest.DONE) {
-	                var message = req.responseText; // error message or mission id
-	                if (req.status == 200) {
-	                  orchestrator.refresh(message); // id of the new mission passed
-	                } else {
-	                  self.alert.textContent = message;
-	                  self.reset();
-	                }
-	              }
-	            }
-	          );
-	        }
-	      });
-	      // Manage cancel button
-	      this.wizard.querySelector("input[type='button'].cancel").addEventListener('click', (e) => {
-	        e.target.closest('form').reset();
-	        this.reset();
-	      });
-	    };
-
-	    this.reset = function() {
-	      var fieldsets = document.querySelectorAll("#" + this.wizard.id + " fieldset");
-	      fieldsets[0].hidden = false;
-	      fieldsets[1].hidden = true;
-	      fieldsets[2].hidden = true;
-
-	    };
-
-	    this.changeStep = function(origin, destination) {
-	      origin.hidden = true;
-	      destination.hidden = false;
-	    }
-	  }
+	   
+	  
+	  
+		                       
+		
 
 	  //TODO uncompleted object
 	  function PageOrchestrator() {
