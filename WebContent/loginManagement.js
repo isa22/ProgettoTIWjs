@@ -37,6 +37,7 @@
             var message = req.responseText;
             switch (req.status) {
               case 200:
+            	  console.log("Response = " + message);
             	sessionStorage.setItem('username', message); //save username
                 window.location.href = "Home.html";			 //redirect to home
                 break;
@@ -97,9 +98,9 @@
             var message = req.responseText;
             switch (req.status) {
               case 200:
-                  console.log("redirect to home");
-            	sessionStorage.setItem('username', message);
-                window.location.href = "Home.html";
+            	  console.log("Response = " + message);
+              	sessionStorage.setItem('username', message); //save username
+                window.location.href = "Home.html";			 //redirect to home
                 break;
               case 400: // bad request
                 document.getElementById("alertMessage").textContent = message;

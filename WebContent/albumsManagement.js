@@ -43,8 +43,8 @@
 	    //call server for albums data and show them in the page
 	    this.show = function(next) {
 	      var self = this;
-	      makeSearchCall("GET", "GetHomePage", null,
-	        function(req) {
+	      makeSearchCall("GET", "Home", null,
+	        /*function(req) {
 	          if (req.readyState == 4) {
 	            var message = req.responseText;
 	            if (req.status == 200) {
@@ -59,34 +59,57 @@
 	          } else {
 				  self.alert.textContent = message;
 			  }
-	        }
+	        }*/
+			  function(req) {
+				  if (req.readyState == XMLHttpRequest.DONE) {
+					  var message = req.responseText;
+					  switch (req.status) {
+						  case 200:
+							  console.log("Response = " + message);
+							  var albumsToShow = JSON.parse(req.responseText);
+							  if (albumsToShow.length == 0) {self.alert.textContent = "No albums found!"; return;}
+							  self.update(albumsToShow); // self visible by closure
+							  if (next) next(); // show the default element of the list if present
+							  break;
+						  case 400: // bad request
+							  self.alert.textContent = message;
+							  break;
+						  case 401: // unauthorized
+							  self.alert.textContent = message;
+							  break;
+						  case 500: // server error
+							  self.alert.textContent = message;
+							  break;
+					  }
+				  }
+			  }
 	      );
 	    };
 
 		//update the page content about albums
 	    this.update = function(arrayAlbums) {
-	      var card, cardClass, imgLink, firstImage, body, name;
+	      var card, cardBody, imgLink, firstImage, title;
 	      this.listcontainerbody.innerHTML = ""; // empty the card body
 	      // build updated list
 	      var self = this;
 	      arrayAlbums.forEach(function(album) { // self visible here, not this
 	        card = document.createElement("div");
-	        card.setAttribute("class", "card mb-4 shadow-sm");
+	        card.setAttribute("class", "card mb-4 mx-auto d-block shadow-sm");
 	        imgLink = document.createElement("a");
 	        card.appendChild(imgLink);
 	        imgLink.setAttribute('albumId', album.id);
 	        firstImage = document.createElement("img");
-	        firstImage.setAttribute("src", album.firstImagePath);
+	        firstImage.setAttribute("src", getContextPath() + album.firstImagePath);
 	        firstImage.setAttribute("class", "card-img-top thumbnailsec");
-	        firstImage.setAttribute("id", "albumImage");
+	        firstImage.setAttribute("id", album.id);
 	        imgLink.appendChild(firstImage);
-	        cardbody = document.createElement("div");
-	        cardbody.setAttribute("class", "card-body");
-	        card.appendChild(body);
+	        cardBody = document.createElement("div");
+	        cardBody.setAttribute("class", "card-body");
+	        card.appendChild(cardBody);
 	        title = document.createElement("h5");
 	        title.setAttribute("id", "albumName");
 	        title.textContent = album.title;
-	        body.appendChild(title);
+	        cardBody.appendChild(title);
 	        
 
 	        //TODO finish the html element
@@ -132,9 +155,9 @@
 			};
 
 			//call server for album images and show them in the page
-			this.show = function(next) {
+			this.show = function(albumId,page) {
 				var self = this;
-				makeSearchCall("GET", "GetAlbum", null,
+				makeSearchCall("GET", "GetAlbum", "albumId="+albumId+"&page="+page,
 					function(req) {
 						if (req.readyState == 4) {
 							var message = req.responseText;
@@ -200,11 +223,11 @@
 			};
 
 			//TODO understand what this function does
-			this.autoclick = function(albumId) {
+			this.autoclick = function(missionId) {
 				var e = new Event("click");
-				var selector = "a[albumid='" + albumId + "']";
+				var selector = "a[missionid='" + missionId + "']";
 				var anchorToClick =
-					(albumId) ? document.querySelector(selector) : this.listcontainerbody.querySelectorAll("a")[0];
+					(missionId) ? document.querySelector(selector) : this.listcontainerbody.querySelectorAll("a")[0];
 				if (anchorToClick) anchorToClick.dispatchEvent(e);
 			}
 
@@ -213,7 +236,7 @@
 	  //Image details object //TODO uncompleted object
 	  function ImageDetails(options) {
 	    this.alert = options['alert'];
-	    this.descriptioncontainer = options['descriptioncontainer'];
+	    this.detailcontainer = options['detailcontainer'];
 	    this.expensecontainer = options['expensecontainer'];
 	    this.expenseform = options['expenseform'];
 	    this.closeform = options['closeform'];
@@ -282,7 +305,7 @@
 	              var mission = JSON.parse(req.responseText);
 	              self.update(mission); // self is the object on which the function
 	              // is applied
-	              self.descriptioncontainer.style.visibility = "visible";
+	              self.detailcontainer.style.visibility = "visible";
 	              switch (mission.status) {
 	                case "OPEN":
 	                  self.expensecontainer.style.visibility = "hidden";
@@ -313,7 +336,7 @@
 
 
 	    this.reset = function() {
-	      this.albumscontainer.style.visibility = "hidden";
+	      this.detailcontainer.style.visibility = "hidden";
 	      this.expensecontainer.style.visibility = "hidden";
 	      this.expenseform.style.visibility = "hidden";
 	      this.closeform.style.visibility = "hidden";
@@ -437,10 +460,11 @@
 	      /*imageDetails = new ImageDetails({ // many parameters, wrap them in an
 	        // object
 	        alert: alertContainer,
-	        descriptioncontainer: document.getElementById("descriptioncontainer"),
-	        commentscontainer: document.getElementById("commentscontainer"),
-	        commentform: document.getElementById("commentform"),
-	        date: document.getElementById("date"),
+	        detailcontainer: document.getElementById("id_detailcontainer"),
+	        expensecontainer: document.getElementById("id_expensecontainer"),
+	        expenseform: document.getElementById("id_expenseform"),
+	        closeform: document.getElementById("id_closeform"),
+	        date: document.getElementById("id_date"),
 	        destination: document.getElementById("id_destination"),
 	        status: document.getElementById("id_status"),
 	        description: document.getElementById("id_description"),
@@ -463,10 +487,11 @@
 	    this.refresh = function(currentMission) {
 	      alertContainer.textContent = "";
 	      imagesList.reset();
+	      albumList.show();
 	      //imageDetails.reset();
-	      imagesList.show(function() {
+	      /*imagesList.show(function() {
 	        imagesList.autoclick(currentMission);
-	      }); // closure preserves visibility of this
+	      });*/ // closure preserves visibility of this
 	    };
 	  }
 	})();
