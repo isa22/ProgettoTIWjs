@@ -166,7 +166,8 @@
 	        firstImage = document.createElement("img");
 	        firstImage.setAttribute("src", getContextPath() + album.firstImagePath);
 	        firstImage.setAttribute("class", "card-img-top thumbnailsec");
-	        imgLink.appendChild(firstImage);
+		    firstImage.setAttribute('albumId', album.id);
+		    imgLink.appendChild(firstImage);
 	        cardBody = document.createElement("div");
 	        cardBody.setAttribute("class", "card-body");
 	        card.appendChild(cardBody);
@@ -179,10 +180,10 @@
 	        //TODO finish the html element
 	        //...
 
-			  
-			  card.addEventListener("click", (e) => {
+
+			  firstImage.addEventListener("click", (e) => {
 	          // image clicked
-	          imagesList.show(e.target.getAttribute("id"), 1); // the list must know the details container
+	          imagesList.show(e.target.getAttribute("albumId"), 1); // the list must know the details container
 	        }, false);
 	        imgLink.href = "#";
 	        self.listcontainerbody.appendChild(card);
@@ -221,9 +222,7 @@
 			//call server for album images and show them in the page
 			this.show = function(albumId,page) {
 				var self = this;
-				var searchParams = new URLSearchParams();
-				searchParams.append("albumId", albumId);
-				searchParams.append("page", page);
+				console.log("Album?albumId="+albumId+"&page="+page);
 				makeSearchCall("GET", "Album?albumId="+albumId+"&page="+page,
 					/*function(req) {
 						if (req.readyState == 4) {
@@ -247,7 +246,7 @@
 					  var message = req.responseText;
 					  switch (req.status) {
 						  case 200:
-							  var albumImages = JSON.parse(req.responseText);
+							  var albumImages = JSON.parse(message);
 								if (albumImages.length == 0) {
 									self.alert.textContent = "No images yet!";
 									return;
@@ -274,6 +273,8 @@
 			//update the page content about albums
 			this.update = function(arrayImages, page) {
 
+				//console.log(arrayImages);
+
 				//html elements for showing the images
 				var card, imgPreview, cardBody, imgName;
 
@@ -293,7 +294,7 @@
 					card.setAttribute("class","card mb-4 shadow-sm");
 					imgPreview = document.createElement("img");
 					imgPreview.setAttribute("class","card-img-top thumbnailsec");
-					imgPreview.setAttribute("src",image.path);
+					imgPreview.setAttribute("src",getContextPath() + image.path);
 					cardBody = document.createElement("div");
 					cardBody.setAttribute("class","card-body");
 					imgName = document.createElement("p");
