@@ -9,7 +9,7 @@ public class AlbumData{
 	private String albumTitle;
 	private int albumId;
 	
-	public void AlbumData(List<Image> images, String albumTitle, int albumId) {
+	public AlbumData(List<Image> images, String albumTitle, int albumId) {
 		this.images = images;
 		this.albumTitle = albumTitle;
 		this.albumId = albumId;
