@@ -16,15 +16,14 @@ public class ImageDAO {
 		this.connection = connection;
 	}
 	
-	public List<Image> findImagesByAlbum(int albumId, int pageOffset) throws SQLException {
+	public List<Image> findImagesByAlbum(int albumId) throws SQLException {
 		List<Image> images = new ArrayList<Image>();
-		String query = "SELECT * from dbtiwexam1920js.image where album = ? limit ?,5";
+		String query = "SELECT * from dbtiwexam1920js.image where album = ? order by date desc";
 		ResultSet result = null;
 		PreparedStatement pstatement = null;
 		try {
 			pstatement = connection.prepareStatement(query);
 			pstatement.setInt(1, albumId);
-			pstatement.setInt(2, (pageOffset-1)*5);
 			result = pstatement.executeQuery();
 			while (result.next()) {
 				Image image = new Image();
