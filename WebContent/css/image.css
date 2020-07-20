@@ -74,6 +74,56 @@ img.thumbnailsec {
 	    padding-bottom: 56.25%; /*16/9 aspect ratio*/
 }
 
+/*album drag elements style*/
+ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+li{
+    cursor: move;
+    margin: 1px;
+    padding: 5px 20px;
+    font-size: 20px;
+    /*background-color: #ccc;*/
+}
+
+.draggable-card {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.ghost {
+    opacity: .4;
+}
+
+/*prevent user to drag only album preview image*/
+.unselectable {
+    -moz-user-select: none; 
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    -webkit-user-drag: none; /* Prevents dragging of images/divs etc */
+    user-drag: none;
+}
+
+}
+
 @media (min-width: 768px) {
     .col-sm-5ths {
         width: 20%;

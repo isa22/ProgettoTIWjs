@@ -23,6 +23,8 @@
 		}
 	}
 
+
+
 	//List of albums object
 	function AlbumsList(_alert, _listcontainer, _listcontainerbody) {
 
@@ -89,104 +91,119 @@
 
 		//update the page content about albums
 		this.update = function(arrayAlbums) {
-			var card, cardBody, imgLink, firstImage, title;
+			var li, card, cardBody, imgLink, firstImage, title;
 			this.listcontainerbody.innerHTML = ""; // empty the card body
 			// build updated list
 			var self = this;
 
-
-			/*function sortable(rootEl, onUpdate) {
-				var dragEl;
-
-				// Making all siblings movable
-				[].slice.call(rootEl.children).forEach(function (itemEl) {
-					itemEl.draggable = true;
-				});
-
-				// Function responsible for sorting
-				function _onDragOver(evt) {
-					evt.preventDefault();
-					evt.dataTransfer.dropEffect = 'move';
-
-					var target = evt.target;
-					if (target && target !== dragEl && target.nodeName == 'LI') {
-						// Sorting
-						rootEl.insertBefore(dragEl, target.nextSibling || target);
-					}
-				}
-
-				// End of sorting
-				function _onDragEnd(evt){
-					evt.preventDefault();
-
-					dragEl.classList.remove('ghost');
-					rootEl.removeEventListener('dragover', _onDragOver, false);
-					rootEl.removeEventListener('dragend', _onDragEnd, false);
-
-
-					// Notification about the end of sorting
-					onUpdate(dragEl);
-				}
-
-				// Sorting starts
-				rootEl.addEventListener('dragstart', function (evt){
-					dragEl = evt.target; // Remembering an element that will be moved
-
-					// Limiting the movement type
-					evt.dataTransfer.effectAllowed = 'move';
-					evt.dataTransfer.setData('Text', dragEl.textContent);
-
-
-					// Subscribing to the events at dnd
-					rootEl.addEventListener('dragover', _onDragOver, false);
-					rootEl.addEventListener('dragend', _onDragEnd, false);
-
-
-					setTimeout(function () {
-						// If this action is performed without setTimeout, then
-						// the moved object will be of this class.
-						dragEl.classList.add('ghost');
-					}, 0)
-				}, false);
-
-				// Using
-				sortable(arrayAlbums, function (album) {
-					console.log(album);
-				});
-			}*/
-
 			arrayAlbums.forEach(function(album) { // self visible here, not this
 				card = document.createElement("div");
+				card.setAttribute("sortable", "true");
+				card.setAttribute("albumId", album.id);
 				card.setAttribute("class", "card mb-4 mx-auto d-block shadow-sm w-50");
-				imgLink = document.createElement("a");
+				//imgLink = document.createElement("a");
 				card.setAttribute("id", album.id);
-				card.appendChild(imgLink);
-				imgLink.setAttribute('albumId', album.id);
+				//card.appendChild(imgLink);
+				//imgLink.setAttribute('albumId', album.id);
 				firstImage = document.createElement("img");
 				firstImage.setAttribute("src", getContextPath() + album.firstImagePath);
 				firstImage.setAttribute("class", "card-img-top thumbnailsec");
 				firstImage.setAttribute('albumId', album.id);
-				imgLink.appendChild(firstImage);
+				card.appendChild(firstImage);
 				cardBody = document.createElement("div");
 				cardBody.setAttribute("class", "card-body");
+				cardBody.setAttribute("albumId", album.id);
 				card.appendChild(cardBody);
 				title = document.createElement("h5");
 				title.setAttribute("id", "albumName");
+				title.setAttribute("albumId", album.id);
 				title.textContent = album.title;
 				cardBody.appendChild(title);
 
-				firstImage.addEventListener("click", (e) => {
+				card.addEventListener("click", (e) => {
 					// image clicked
 					self.reset();
 					imagesList.show(e.target.getAttribute("albumId"), 1); // the list must know the details container
 				}, false);
-				imgLink.href = "#";
+				//imgLink.href = "#";
 				self.listcontainerbody.appendChild(card);
 			});
+
+			//make albums visible
 			this.listcontainer.style.visibility = "visible";
 
+			//make albums sortable
+			this.sortableAlbums(
+				this.listcontainerbody,
+				function (sortedAlbum) {
+					console.log("album " + sortedAlbum.getAttribute("albumId") + "has changed position");
+				}
+			);
 		};
 
+		//make albums sortable by drag and drop
+		this.sortableAlbums = function (rootEl, onUpdate) {
+			var dragEl;
+
+			console.log("rootEl = " + rootEl.getAttribute("id"));
+			console.log(Array.from(rootEl.children));
+			// Making all siblings movable
+			Array.from(rootEl.children).forEach(function (itemEl) {
+				console.log("itemEl = " + itemEl.getAttribute("id") + " " + itemEl.getAttribute("sortable") );
+				itemEl.draggable = true;
+			});
+
+			// Function responsible for sorting
+			function _onDragOver(evt) {
+				evt.preventDefault();
+				evt.dataTransfer.dropEffect = 'move';
+
+				console.log("dragging: " + dragEl.tagName);
+
+				var target = evt.target;
+				if( target && target !== dragEl && target.getAttribute("sortable") === "true" ){
+					var rect = target.getBoundingClientRect();
+					var next = (evt.clientY - rect.top)/(rect.bottom - rect.top) > .5;
+					rootEl.insertBefore(dragEl, next && target.nextSibling || target);
+				}
+			}
+
+			// End of sorting
+			function _onDragEnd(evt){
+				evt.preventDefault();
+
+				dragEl.classList.remove('ghost');
+				rootEl.removeEventListener('dragover', _onDragOver, false);
+				rootEl.removeEventListener('dragend', _onDragEnd, false);
+
+
+				// Notification about the end of sorting
+				onUpdate(dragEl);
+			}
+
+			// Sorting starts
+			rootEl.addEventListener('dragstart', function (evt){
+				var draggingParentOrChild = evt.target.getAttribute("sortable")==="true";
+
+				dragEl = (draggingParentOrChild)?evt.target:evt.target.parentNode; // Remembering an element that will be moved
+
+				// Limiting the movement type
+				evt.dataTransfer.effectAllowed = 'move';
+				evt.dataTransfer.setData('Text', dragEl.textContent);
+
+
+				// Subscribing to the events at dnd
+				rootEl.addEventListener('dragover', _onDragOver, false);
+				rootEl.addEventListener('dragend', _onDragEnd, false);
+
+
+				setTimeout(function () {
+					// If this action is performed without setTimeout, then
+					// the moved object will be of this class.
+					dragEl.classList.add('ghost');
+				}, 0)
+			}, false);
+		}
 	}
 
 	//album title bar, handles return to albums list event
@@ -581,18 +598,6 @@
 
 	  }
 
-	   
-	  
-	  
-		                       
-		
-
-
-
-
-
-
-
 	//TODO uncompleted object
 	function PageOrchestrator() {
 		var alertContainer = document.getElementById("alertMessage");
@@ -619,9 +624,9 @@
 
 			titleLine.imageList = imagesList; //set image list to titleLine
 
-			titleLine.setReturnToAlbums();
+			titleLine.setReturnToAlbums();	  //initialize return to albums button
 
-			imagesList.setPaginationButtons(); //loading pagination buttons
+			imagesList.setPaginationButtons(); //initialize pagination buttons
 
 			imageDetails = new ImageDetails(
 					alertContainer, 
