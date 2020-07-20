@@ -26,7 +26,7 @@
 
 
 	//List of albums object
-	function AlbumsList(_alert, _listcontainer, _listcontainerbody) {
+	function AlbumsList(_alert, _listcontainer, _listcontainerbody, _extContainer) {
 
 		//reference to alert element
 		this.alert = _alert;
@@ -37,10 +37,14 @@
 		//reference to albums container body
 		this.listcontainerbody = _listcontainerbody;
 
+		//reference to external container (used to collapse album area)
+		this.externalContainer = _extContainer;
+
 		//clears the html element content
 		this.reset = function() {
 			this.listcontainer.style.visibility = "hidden";
 			this.listcontainerbody.innerHTML="";
+			this.externalContainer.removeChild(this.listcontainer);
 		};
 
 		//call server for albums data and show them in the page
@@ -93,6 +97,10 @@
 		this.update = function(arrayAlbums) {
 			var li, card, cardBody, imgLink, firstImage, title;
 			this.listcontainerbody.innerHTML = ""; // empty the card body
+
+			//expand albums area by re-appending the html child elem
+			this.externalContainer.appendChild(this.listcontainer);
+
 			// build updated list
 			var self = this;
 
@@ -214,6 +222,7 @@
 			//retrieve button html reference
 			document.getElementById("saveAlbumsOrder").addEventListener("click", (e) => {
 
+				var self=this;
 				var albumsIdOrder = [];
 
 				//retrieve album order from html document
@@ -234,13 +243,13 @@
 									console.log("New albums order saved successfully");
 									break;
 								case 400: // bad request
-									this.alert.textContent = message;
+									self.alert.textContent = message;
 									break;
 								case 401: // unauthorized
-									this.alert.textContent = message;
+									self.alert.textContent = message;
 									break;
 								case 500: // server error
-									this.alert.textContent = message;
+									self.alert.textContent = message;
 									break;
 							}
 						}
@@ -636,7 +645,9 @@
 			albumList = new AlbumsList(
 				alertContainer,
 				document.getElementById("albumsContainer"),
-				document.getElementById("albumsBody"));
+				document.getElementById("albumsBody"),
+				document.getElementById("albumsExternalContainer")
+				);
 
 			titleLine = new AlbumTitleLine(document.getElementById("albumTitleLine"),
 				document.getElementById("albumTitle"), albumList, null);

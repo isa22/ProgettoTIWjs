@@ -92,6 +92,11 @@ li{
     /*background-color: #ccc;*/
 }
 
+/*fix max with*/
+.widthSet {
+    max-width: 500px;
+}
+
 .draggable-card {
   display: -ms-flexbox;
   display: flex;
