@@ -342,12 +342,10 @@
 				card.appendChild(cardBody);
 				cardBody.appendChild(imgName);
 				card.setAttribute('imageId', image.id); // set a custom HTML attribute
-				card.addEventListener("click", (e) => { //TODO add the event for cursor on image
+				imgPreview.addEventListener("mouseover", (e) => { //TODO add the event for cursor on image
 					// dependency via module parameter
-					imageDetails.show({
-						title: image.title,
-						description: image.description,
-						comments: image.comments
+					imageDetails.update({
+						image: image
 					}); // the list must know the details container
 				}, false);
 				self.listcontainerbody.appendChild(col);
@@ -392,25 +390,52 @@
 		
 		
 		//update the page content with the image details
-		this.update = function(title, description, comments) {
+		this.update = function(image) {
 
-			//console.log(arrayImages);
+			console.log(image);
 
 			//html elements for showing the images
-			var card, imgPreview, cardBody, imgName;
-
-			//images per page
-			const imagesPerPage = 5;
+			var modalContent, modalHeader, modalTitle, closeButton, span, modalBody;
+			var infoContainer, naturalImg, card, cardBody, cardText;
+			
 
 			this.listcontainerbody.innerHTML = ""; // empty image list body
 			var self = this;
 
-			//arrayImages offsets
-			var startImageOffset = (page-1)*imagesPerPage;
-			var endImageOffset = startImageOffset + 5;
 
-			//showing 5 page images
-			arrayImages.slice(startImageOffset,endImageOffset).forEach(function(image) { // self visible here, not this
+			modalContent = document.createElement("div");
+			modalContent.setAttribute("class","modal-content");
+			
+			modalHeader = document.createElement("div");
+			modalHeader.setAttribute("class","modal-header");
+			modalContent.appendChild(modalHeader);
+			
+			modalTitle = document.createElement("h5");
+			modalTitle.setAttribute("class","modal-title");
+			modalTitle.setAttribute('titleId',"modalTitle");
+			modalTitle.textContent = image.title;
+			modalHeader.appendChild(modalTitle);
+			
+			
+			closeButton = document.createElement("button");
+			closeButton.setAttribute("type","button");
+			closeButton.setAttribute("class","close");
+			closeButton.setAttribute("data-dismiss","modal");
+			closeButton.setAttribute("aria-label","Close");
+			modalHeader.appendChild(closeButton);
+			
+			span = document.createElement("div");
+			span.setAttribute("aria-hidden","true");
+			span.textContent = '&times;'
+			closeButton.appendChild(span);
+			
+			modalBody = document.createElement("div");
+			modalBody.setAttribute("class","modal-body");
+			modalContent.appendChild(modalBody);
+			
+			self.listcontainerbody.appendChild(modalContent);
+			
+			/*arrayImages.slice(startImageOffset,endImageOffset).forEach(function(image) { // self visible here, not this
 				card = document.createElement("div");
 				card.setAttribute("class","card mb-4 shadow-sm");
 				imgPreview = document.createElement("img");
@@ -433,8 +458,8 @@
 						comments: image.comments
 					}); // the list must know the details container
 				}, false);
-				self.listcontainerbody.appendChild(card);
-			});
+				self.listcontainerbody.appendChild(modalContent);
+			});*/
 			this.listcontainer.style.visibility = "visible";
 			
 
@@ -485,60 +510,6 @@
 			});
 		};
 
-
-		this.show = function(missionid) {
-			var self = this;
-			makeCall("GET", "GetMissionDetailsData?missionid=" + missionid, null,
-				function(req) {
-					if (req.readyState == 4) {
-						var message = req.responseText;
-						if (req.status == 200) {
-							var mission = JSON.parse(req.responseText);
-							self.update(mission); // self is the object on which the function
-							// is applied
-							self.detailcontainer.style.visibility = "visible";
-							switch (mission.status) {
-								case "OPEN":
-									self.expensecontainer.style.visibility = "hidden";
-									self.expenseform.style.visibility = "visible";
-									self.expenseform.missionid.value = mission.id;
-									self.closeform.style.visibility = "hidden";
-									break;
-								case "REPORTED":
-									self.expensecontainer.style.visibility = "visible";
-									self.expenseform.style.visibility = "hidden";
-									self.closeform.missionid.value = mission.id;
-									self.closeform.style.visibility = "visible";
-									break;
-								case "CLOSED":
-									self.expensecontainer.style.visibility = "visible";
-									self.expenseform.style.visibility = "hidden";
-									self.closeform.style.visibility = "hidden";
-									break;
-							}
-						} else {
-							self.alert.textContent = message;
-
-						}
-					}
-				}
-			);
-		};
-
-
-	    this.update = function(m) {
-	      this.date.textContent = m.startDate;
-	      this.destination.textContent = m.destination;
-	      this.status.textContent = m.status;
-	      this.description.textContent = m.description;
-	      this.country.textContent = m.country;
-	      this.province.textContent = m.province;
-	      this.city.textContent = m.city;
-	      this.fund.textContent = m.fund;
-	      this.food.textContent = m.expenses.food;
-	      this.accomodation.textContent = m.expenses.accomodation;
-	      this.travel.textContent = m.expenses.transportation;
-	    }
 	  }
 
 	   
@@ -575,6 +546,7 @@
 				titleLine,
 				document.getElementById("imagesContainer"),
 				document.getElementById("imagesBody"));
+			
 
 			titleLine.imageList = imagesList; //set image list to titleLine
 
@@ -582,26 +554,11 @@
 
 			imagesList.setPaginationButtons(); //loading pagination buttons
 
-			/*imageDetails = new ImageDetails({ // many parameters, wrap them in an
-              // object
-              alert: alertContainer,
-              detailcontainer: document.getElementById("id_detailcontainer"),
-              expensecontainer: document.getElementById("id_expensecontainer"),
-              expenseform: document.getElementById("id_expenseform"),
-              closeform: document.getElementById("id_closeform"),
-              date: document.getElementById("id_date"),
-              destination: document.getElementById("id_destination"),
-              status: document.getElementById("id_status"),
-              description: document.getElementById("id_description"),
-              country: document.getElementById("id_country"),
-              province: document.getElementById("id_province"),
-              city: document.getElementById("id_city"),
-              fund: document.getElementById("id_fund"),
-              food: document.getElementById("id_food"),
-              accomodation: document.getElementById("id_accomodation"),
-              transportation: document.getElementById("id_transportation")
-            });
-            imageDetails.registerEvents(this);*/
+			imageDetails = new ImageDetails(
+					alertContainer, 
+					document.getElementById("modalImageContainer"),
+					document.getElementById("modalImageBody"));
+            
 
 			/*document.querySelector("a[href='Logout']").addEventListener('click', () => {
               window.sessionStorage.removeItem('username');

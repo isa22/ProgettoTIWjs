@@ -84,23 +84,33 @@
 			<!-- image loaded by js file in modal box-->
 					
 			<!-- Modal -->
-			<div class="modal fade" id="modalImageContainer" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
-			  <div class="modal-dialog" role="document">
+			<div class="modal fade" tabindex="-1" id="modalImageContainer" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+			  <div class="modal-dialog" role="document" id="modalImageBody">
 			    
-			    <div class="modal-content">
+			    <!--<div class="modal-content">
 			      <div class="modal-header">
 			        <h5 class="modal-title" id="modalTitle">Modal title</h5>
 			        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 			          <span aria-hidden="true">&times;</span>
 			        </button>
 			      </div>
+			      
 			      <div class="modal-body">
-			        ...
-			      </div>
+			        <div class="my-sm-2">
+						<img class="my-sm-2 mx-auto d-block"
+							src="@{/{path}(path=${focusedImage.path})}"
+							alt="${focusedImage.title}">
+						<div class="card my-sm-2">
+							<div class="card-body">
+								<p class="card-text" text="${focusedImage.description}"></p>
+							</div>
+						</div>
+					</div>
+					      </div>
 			      <div class="modal-footer">
  
 			      </div>
-			    </div>
+			    </div>  -->
 			    
 			  </div>
 			</div>
