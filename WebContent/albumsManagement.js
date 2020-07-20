@@ -1,7 +1,7 @@
 	(function() { // avoid variables ending up in the global scope
 
 	  // page components
-	  var imageDetails, imagesList, albumList,
+	  var imageDetails, imagesList, albumList, titleLine,
 	    pageOrchestrator = new PageOrchestrator(); // main controller
 
 	  window.addEventListener("load", () => {
@@ -19,7 +19,7 @@
 	  function PersonalMessage(_username, messagecontainer) { //TODO added by prof, actually I don't know the its purpose
 	    this.username = _username;
 	    this.show = function() {
-	      messagecontainer.textContent = this.username;
+	      messagecontainer.textContent = "Username: " + this.username;
 	    }
 	  }
 
@@ -203,11 +203,26 @@
 
 	  }
 
+	    //album title bar
+	    function AlbumTitleLine(_albumTitleLine, _albumTitle){
+	  	 	this.albumTitleLine = _albumTitleLine;
+	  		this.albumTitlelabel = _albumTitle;
+	  		this.show = function(albumTitle){
+				this.albumTitleLine.style.visibility="visible";
+				this.albumTitlelabel.textContent = albumTitle;
+			};
+			this.hide = function(){
+				this.albumTitleLine.style.visibility="hidden";
+			}
+		}
+
 		//List of images object //TODO uncompleted object
-		function ImagesList(_alert, _listcontainer, _listcontainerbody) {
+		function ImagesList(_alert,_titleLine, _listcontainer, _listcontainerbody) {
 
 	  	//reference to alert element
 			this.alert = _alert;
+
+			this.titleLine = _titleLine;
 
 			//reference to albums container header //TODO may not be useful
 			this.listcontainer = _listcontainer;
@@ -219,73 +234,95 @@
 				this.listcontainer.style.visibility = "hidden";
 			};
 
+			//loaded album data
+			this.currentAlbumImages = null;
+			this.currentNumOfPages = null;
+			this.currentAlbumId = null;
+			this.currentAlbumTitle = "albumTitle";
+			this.currentPage = 1;
+			this.imagesPerPage = 5; //images per page
+
 			//call server for album images and show them in the page
-			this.show = function(albumId,page) {
+			this.show = function(albumId) {
 				var self = this;
-				console.log("Album?albumId="+albumId+"&page="+page);
-				makeSearchCall("GET", "Album?albumId="+albumId+"&page="+page,
-					/*function(req) {
-						if (req.readyState == 4) {
-							var message = req.responseText;
-							if (req.status == 200) {
-								var albumImages = JSON.parse(req.responseText);
-								if (albumImages.length == 0) {
-									self.alert.textContent = "No images yet!";
-									return;
+					//download album images
+					makeSearchCall("GET", "Album?albumId="+albumId,
+						function(req) {
+							if (req.readyState == XMLHttpRequest.DONE) {
+								var message = req.responseText;
+								switch (req.status) {
+									case 200:
+										var albumImages = JSON.parse(message);
+										if (albumImages.length == 0) {
+											self.alert.textContent = "No images yet!";
+											return;
+										}
+										self.currentAlbumTitle = albumImages.title;
+										self.update(albumImages.images, 1); // self visible by closure
+										//if (next) next(); // show the default element of the list if present
+										break;
+									case 400: // bad request
+										self.alert.textContent = message;
+										break;
+									case 401: // unauthorized
+										self.alert.textContent = message;
+										break;
+									case 500: // server error
+										self.alert.textContent = message;
+										break;
 								}
-								self.update(albumImages.images, 1); // self visible by closure
-								if (next) next(); // show the default element of the list if present
 							}
-						} else {
-							self.alert.textContent = message;
 						}
-					}*/
-				
-				function(req) {
-				  if (req.readyState == XMLHttpRequest.DONE) {
-					  var message = req.responseText;
-					  switch (req.status) {
-						  case 200:
-							  var albumImages = JSON.parse(message);
-								if (albumImages.length == 0) {
-									self.alert.textContent = "No images yet!";
-									return;
-								}
-								self.update(albumImages.images, 1); // self visible by closure
-								//if (next) next(); // show the default element of the list if present
-							  break;
-						  case 400: // bad request
-							  self.alert.textContent = message;
-							  break;
-						  case 401: // unauthorized
-							  self.alert.textContent = message;
-							  break;
-						  case 500: // server error
-							  self.alert.textContent = message;
-							  break;
-					  }
-				  }
-			  }
-			
-			);
+
+					);
+			};
+
+			//registering navigation buttons events
+			this.setPaginationButtons = function () {
+				/*console.log("Num of pages: " + numOfPages);
+				console.log("Num of images: " + this.currentAlbumImages.length);
+				console.log("images per page: " + this.imagesPerPage);*/
+				console.log("Current page: " + this.currentPage);
+
+				var previousButton = document.getElementById("previous");
+				var nextButton = document.getElementById("next");
+				previousButton.addEventListener("click", (e) => {
+					if(this.currentPage>1) {
+						var previousPage = this.currentPage-1;
+						console.log("Go to previous page " + previousPage +" from page "+ this.currentPage);
+						this.update(this.currentAlbumImages,previousPage); //go to previous page
+					}
+				}, false);
+				nextButton.addEventListener("click", (e) => {
+					if(this.currentPage<this.currentNumOfPages) {
+						var nextPage = this.currentPage + 1;
+						console.log("Go to next page " + nextPage + " from page " + this.currentPage);
+						this.update(this.currentAlbumImages, nextPage); //go to next page
+					}
+				}, false);
 			};
 
 			//update the page content about albums
 			this.update = function(arrayImages, page) {
 
-				//console.log(arrayImages);
+				//rename this
+				var self = this;
+
+				//store current album data
+				this.currentAlbumImages = arrayImages; //store array of images
+				this.currentPage = page;
+				this.currentNumOfPages = Math.ceil(self.currentAlbumImages.length/this.imagesPerPage);
 
 				//html elements for showing the images
 				var card, imgPreview, cardBody, imgName;
 
-				//images per page
-				const imagesPerPage = 5;
-
 				this.listcontainerbody.innerHTML = ""; // empty image list body
-				var self = this;
+
+				//show album title line
+				this.titleLine.show(this.currentAlbumTitle);
 
 				//arrayImages offsets
-				var startImageOffset = (page-1)*imagesPerPage;
+				var startImageOffset = (page-1)*this.imagesPerPage;
 				var endImageOffset = startImageOffset + 5;
 
 				//showing 5 page images
@@ -315,6 +352,14 @@
 				});
 				this.listcontainer.style.visibility = "visible";
 
+				//hide/show buttons
+				var previousButton = document.getElementById("previous");
+				var nextButton = document.getElementById("next");
+				var numOfPages = Math.ceil(self.currentAlbumImages.length/this.imagesPerPage);
+				if(page<=1) previousButton.style.visibility = "hidden";
+				else previousButton.style.visibility = "visible";
+				if(page>=numOfPages) nextButton.style.visibility = "hidden";
+				else nextButton.style.visibility = "visible";
 			};
 
 			//TODO understand what this function does
@@ -471,10 +516,17 @@
 			document.getElementById("albumsContainer"),
 			document.getElementById("albumsBody"));
 
+		  titleLine = new AlbumTitleLine(document.getElementById("albumTitleLine"),
+		    document.getElementById("albumTitle"));
+		  titleLine.hide(); //hide album title line
+
 	      imagesList = new ImagesList(
 	        alertContainer,
+	        titleLine,
 	        document.getElementById("imagesContainer"),
 	        document.getElementById("imagesBody"));
+
+	      imagesList.setPaginationButtons(); //loading pagination buttons
 
 	      /*imageDetails = new ImageDetails({ // many parameters, wrap them in an
 	        // object
