@@ -13,7 +13,7 @@
 	<header class="header mt-auto pt-sm-5 bg-info shadow-sm">
 		<div class="d-flex justify-content-between"></div>
 	</header>
-
+	
 
 	<main role="main" class="container">
 
@@ -21,66 +21,74 @@
 			<h1>Albums</h1>
 		</section>
 		
-		<!-- message bar -->
-		<div class="container mt-3">
-			<div class="row">
-				<div class="col md-2 ml-5 float-left">
-					<h5 class="" id="personalMessage"></h5>
-				</div>
-			</div>
-		</div>
-
 		<!-- Alert bar -->
-		<div class="col md-8">
-			<div class="card shadow-sm ml-4 mr-4">
-				<div class="card-body">
+	<div class="col md-8">
+		<div class="card shadow-sm ml-4 mr-4">
+					<div class="card-body">
 					<p class="mt-sm-2 mb-sm-2 text-danger" id="alertMessage"></p>
+					</div>
 				</div>
-			</div>
-		</div>
-
-		<!-- album data bar-->
-		<div class="container mt-5 mb-5" id="albumTitleLine">
-			<div class="row">
-				<div class="col-sm">
-					<input type="button"
-						class="float-left btn btn btn-outline-primary ml-5"
-						id="returnToAlbum" value="&laquo; Return to albums">
-					<h2 class="absolute-center" id="albumTitle"></h2>
+	</div>
+	
+	<!-- message bar -->
+	<div class="col md-lg-2">
+		<div class="card shadow-sm ml-4 mr-4">
+					<div class="card-body">
+					<h5>Username: </h5><p class="mt-sm-2 mb-sm-2" id="personalMessage"></p>
+					</div>
 				</div>
-			</div>
-		</div>
+	</div>
 
 		<!-- Albums list -->
 		<div class="album py-5 bg-light" id="albumsContainer">
-			<div class="col-md-5" id="albumsBody">
+				<div class="col-md-5" id="albumsBody">
 				<!-- albums loaded by js file-->
 			</div>
 		</div>
-
+		
 		<!-- Images list -->
 		<div class="album py-5 bg-light" id="imagesContainer">
 			<div class="row" id="imagesBody">
-				<div class="col-md-5ths col-xs-6">
-					<!-- images loaded by js file-->
+				<div class="col-md-5ths col-xs-6" >
+				<!-- images loaded by js file-->
 				</div>
 			</div>
-
-			<!-- previous button loads with js file previous images-->
-			<input type="button"
-				class="float-left btn btn btn-outline-primary ml-5" id="previous"
-				value="&laquo; Previous">
-
-			<!-- next button loads with js file next images-->
-			<input type="button"
-				class="float-right btn btn btn-outline-primary mr-5" id="next"
-				value="Next &raquo;">
-
+			
+			<p class="float-left" id="previous">
+				<!-- previous button loaded by js file if there's a previous page -->
+			</p>
+			
+			<p class="float-right" id="next">
+				<!-- next button loaded by js file if there's a next page -->
+			</p>
+			
 		</div>
-
+		
 		<!-- Image, description, comments and comment form -->
 		<div class="album py-5 bg-light" id="imageContainer">
-			<!-- image loaded by js file-->
+			<!-- image loaded by js file in modal box-->
+					
+			<!-- Modal -->
+			<div class="modal fade" id="modalImageContainer" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+			  <div class="modal-dialog" role="document">
+			    
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <h5 class="modal-title" id="modalTitle">Modal title</h5>
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			          <span aria-hidden="true">&times;</span>
+			        </button>
+			      </div>
+			      <div class="modal-body">
+			        ...
+			      </div>
+			      <div class="modal-footer">
+ 
+			      </div>
+			    </div>
+			    
+			  </div>
+			</div>
 		</div>
 
 	</main>

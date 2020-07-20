@@ -1,7 +1,7 @@
 	(function() { // avoid variables ending up in the global scope
 
 	  // page components
-	  var imageDetails, imagesList, albumList, titleLine,
+	  var imageDetails, imagesList, albumList,
 	    pageOrchestrator = new PageOrchestrator(); // main controller
 
 	  window.addEventListener("load", () => {
@@ -19,7 +19,7 @@
 	  function PersonalMessage(_username, messagecontainer) { //TODO added by prof, actually I don't know the its purpose
 	    this.username = _username;
 	    this.show = function() {
-	      messagecontainer.textContent = "Username: " + this.username;
+	      messagecontainer.textContent = this.username;
 	    }
 	  }
 
@@ -96,7 +96,7 @@
 	      var self = this;
 	      
 	      
-	      function sortable(rootEl, onUpdate) {
+	      /*function sortable(rootEl, onUpdate) {
 			   var dragEl;
 			   
 			   // Making all siblings movable
@@ -154,7 +154,7 @@
 		      sortable(arrayAlbums, function (album) {
 		         console.log(album);
 		      });
-		   }
+		   }*/
 	      
 	      arrayAlbums.forEach(function(album) { // self visible here, not this
 	        card = document.createElement("div");
@@ -175,11 +175,6 @@
 	        title.setAttribute("id", "albumName");
 	        title.textContent = album.title;
 	        cardBody.appendChild(title);
-	        
-	        
-	        //TODO finish the html element
-	        //...
-
 
 			  firstImage.addEventListener("click", (e) => {
 	          // image clicked
@@ -192,137 +187,93 @@
 
 	    };
 
-	    //TODO understand what this function does
-	    this.autoclick = function(albumId) {
-	      var e = new Event("click");
-	      var selector = "a[albumId='" + albumId + "']";
-	      var anchorToClick =
-	        (albumId) ? document.querySelector(selector) : this.listcontainerbody.querySelectorAll("a")[0];
-	      if (anchorToClick) anchorToClick.dispatchEvent(e);
-	    }
+	    
 
 	  }
 
-	    //album title bar
-	    function AlbumTitleLine(_albumTitleLine, _albumTitle){
-	  	 	this.albumTitleLine = _albumTitleLine;
-	  		this.albumTitlelabel = _albumTitle;
-	  		this.show = function(albumTitle){
-				this.albumTitleLine.style.visibility="visible";
-				this.albumTitlelabel.textContent = albumTitle;
-			};
-			this.hide = function(){
-				this.albumTitleLine.style.visibility="hidden";
-			}
-		}
-
 		//List of images object //TODO uncompleted object
-		function ImagesList(_alert,_titleLine, _listcontainer, _listcontainerbody) {
+		function ImagesList(_alert, _listcontainer, _listcontainerbody) {
 
 	  	//reference to alert element
 			this.alert = _alert;
 
-			this.titleLine = _titleLine;
-
-			//reference to albums container header //TODO may not be useful
+			//reference to images container header //TODO may not be useful
 			this.listcontainer = _listcontainer;
 
-			//reference to albums container body
+			//reference to images container body
 			this.listcontainerbody = _listcontainerbody;
 
 			this.reset = function() {
 				this.listcontainer.style.visibility = "hidden";
 			};
 
-			//loaded album data
-			this.currentAlbumImages = null;
-			this.currentNumOfPages = null;
-			this.currentAlbumId = null;
-			this.currentAlbumTitle = "albumTitle";
-			this.currentPage = 1;
-			this.imagesPerPage = 5; //images per page
-
 			//call server for album images and show them in the page
-			this.show = function(albumId) {
+			this.show = function(albumId,page) {
 				var self = this;
-					//download album images
-					makeSearchCall("GET", "Album?albumId="+albumId,
-						function(req) {
-							if (req.readyState == XMLHttpRequest.DONE) {
-								var message = req.responseText;
-								switch (req.status) {
-									case 200:
-										var albumImages = JSON.parse(message);
-										if (albumImages.length == 0) {
-											self.alert.textContent = "No images yet!";
-											return;
-										}
-										self.currentAlbumTitle = albumImages.title;
-										self.update(albumImages.images, 1); // self visible by closure
-										//if (next) next(); // show the default element of the list if present
-										break;
-									case 400: // bad request
-										self.alert.textContent = message;
-										break;
-									case 401: // unauthorized
-										self.alert.textContent = message;
-										break;
-									case 500: // server error
-										self.alert.textContent = message;
-										break;
+				console.log("Album?albumId="+albumId+"&page="+page);
+				makeSearchCall("GET", "Album?albumId="+albumId+"&page="+page,
+					/*function(req) {
+						if (req.readyState == 4) {
+							var message = req.responseText;
+							if (req.status == 200) {
+								var albumImages = JSON.parse(req.responseText);
+								if (albumImages.length == 0) {
+									self.alert.textContent = "No images yet!";
+									return;
 								}
+								self.update(albumImages.images, 1); // self visible by closure
+								if (next) next(); // show the default element of the list if present
 							}
+						} else {
+							self.alert.textContent = message;
 						}
-
-					);
-			};
-
-			//registering navigation buttons events
-			this.setPaginationButtons = function () {
-				/*console.log("Num of pages: " + numOfPages);
-				console.log("Num of images: " + this.currentAlbumImages.length);
-				console.log("images per page: " + this.imagesPerPage);*/
-				console.log("Current page: " + this.currentPage);
-
-				var previousButton = document.getElementById("previous");
-				var nextButton = document.getElementById("next");
-				previousButton.addEventListener("click", (e) => {
-					if(this.currentPage>1) {
-						var previousPage = this.currentPage-1;
-						console.log("Go to previous page " + previousPage +" from page "+ this.currentPage);
-						this.update(this.currentAlbumImages,previousPage); //go to previous page
-					}
-				}, false);
-				nextButton.addEventListener("click", (e) => {
-					if(this.currentPage<this.currentNumOfPages) {
-						var nextPage = this.currentPage + 1;
-						console.log("Go to next page " + nextPage + " from page " + this.currentPage);
-						this.update(this.currentAlbumImages, nextPage); //go to next page
-					}
-				}, false);
+					}*/
+				
+				function(req) {
+				  if (req.readyState == XMLHttpRequest.DONE) {
+					  var message = req.responseText;
+					  switch (req.status) {
+						  case 200:
+							  var albumImages = JSON.parse(message);
+								if (albumImages.length == 0) {
+									self.alert.textContent = "No images yet!";
+									return;
+								}
+								self.update(albumImages.images, 1); // self visible by closure
+								//if (next) next(); // show the default element of the list if present
+							  break;
+						  case 400: // bad request
+							  self.alert.textContent = message;
+							  break;
+						  case 401: // unauthorized
+							  self.alert.textContent = message;
+							  break;
+						  case 500: // server error
+							  self.alert.textContent = message;
+							  break;
+					  }
+				  }
+			  }
+			
+			);
 			};
 
 			//update the page content about albums
 			this.update = function(arrayImages, page) {
 
-				//rename this
-				var self = this;
-
-				//store current album data
-				this.currentAlbumImages = arrayImages; //store array of images
-				this.currentPage = page;
-				this.currentNumOfPages = Math.ceil(self.currentAlbumImages.length/this.imagesPerPage);
+				//console.log(arrayImages);
 
 				//html elements for showing the images
 				var card, imgPreview, cardBody, imgName;
 
-				this.listcontainerbody.innerHTML = ""; // empty image list body
+				//images per page
+				const imagesPerPage = 5;
 
-				//show album title line
-				this.titleLine.show(this.currentAlbumTitle);
+				this.listcontainerbody.innerHTML = ""; // empty image list body
+				var self = this;
 
 				//arrayImages offsets
-				var startImageOffset = (page-1)*this.imagesPerPage;
+				var startImageOffset = (page-1)*imagesPerPage;
 				var endImageOffset = startImageOffset + 5;
 
 				//showing 5 page images
@@ -332,6 +283,7 @@
 					imgPreview = document.createElement("img");
 					imgPreview.setAttribute("class","card-img-top thumbnailsec");
 					imgPreview.setAttribute("src",getContextPath() + image.path);
+					imgPreview.setAttribute('imageId', image.id);
 					cardBody = document.createElement("div");
 					cardBody.setAttribute("class","card-body");
 					imgName = document.createElement("p");
@@ -340,7 +292,7 @@
 					card.appendChild(cardBody);
 					cardBody.appendChild(imgName);
 					card.setAttribute('imageId', image.id); // set a custom HTML attribute
-					card.addEventListener("click", (e) => { //TODO add the event for cursor on image
+					imgPreview.addEventListener("mouseover", (e) => { //TODO add the event for cursor on image
 						// dependency via module parameter
 						imageDetails.show({
 							title: image.title,
@@ -351,46 +303,84 @@
 					self.listcontainerbody.appendChild(card);
 				});
 				this.listcontainer.style.visibility = "visible";
+				
 
-				//hide/show buttons
-				var previousButton = document.getElementById("previous");
-				var nextButton = document.getElementById("next");
-				var numOfPages = Math.ceil(self.currentAlbumImages.length/this.imagesPerPage);
-				if(page<=1) previousButton.style.visibility = "hidden";
-				else previousButton.style.visibility = "visible";
-				if(page>=numOfPages) nextButton.style.visibility = "hidden";
-				else nextButton.style.visibility = "visible";
 			};
-
-			//TODO understand what this function does
-			this.autoclick = function(missionId) {
-				var e = new Event("click");
-				var selector = "a[missionid='" + missionId + "']";
-				var anchorToClick =
-					(missionId) ? document.querySelector(selector) : this.listcontainerbody.querySelectorAll("a")[0];
-				if (anchorToClick) anchorToClick.dispatchEvent(e);
-			}
+			
+			
 
 		}
 
 	  //Image details object //TODO uncompleted object
-	  function ImageDetails(options) {
-	    this.alert = options['alert'];
-	    this.detailcontainer = options['detailcontainer'];
-	    this.expensecontainer = options['expensecontainer'];
-	    this.expenseform = options['expenseform'];
-	    this.closeform = options['closeform'];
-	    this.date = options['date'];
-	    this.destination = options['destination'];
-	    this.status = options['status'];
-	    this.description = options['description'];
-	    this.country = options['country'];
-	    this.province = options['province'];
-	    this.city = options['city'];
-	    this.fund = options['fund'];
-	    this.food = options['food'];
-	    this.accomodation = options['accomodation'];
-	    this.travel = options['transportation'];
+	  function ImageDetails(_alert, _listcontainer, _listcontainerbody) {
+		//reference to alert element
+		this.alert = _alert;
+
+		//reference to  //TODO may not be useful
+		this.listcontainer = _listcontainer;
+
+		//reference to albums container body
+		this.listcontainerbody = _listcontainerbody;
+
+		this.reset = function() {
+			this.listcontainer.style.visibility = "hidden";
+		};
+		
+		
+		//update the page content with the image details
+		this.update = function(arrayImages, page) {
+
+			//console.log(arrayImages);
+
+			//html elements for showing the images
+			var card, imgPreview, cardBody, imgName;
+
+			//images per page
+			const imagesPerPage = 5;
+
+			this.listcontainerbody.innerHTML = ""; // empty image list body
+			var self = this;
+
+			//arrayImages offsets
+			var startImageOffset = (page-1)*imagesPerPage;
+			var endImageOffset = startImageOffset + 5;
+
+			//showing 5 page images
+			arrayImages.slice(startImageOffset,endImageOffset).forEach(function(image) { // self visible here, not this
+				card = document.createElement("div");
+				card.setAttribute("class","card mb-4 shadow-sm");
+				imgPreview = document.createElement("img");
+				imgPreview.setAttribute("class","card-img-top thumbnailsec");
+				imgPreview.setAttribute("src",getContextPath() + image.path);
+				imgPreview.setAttribute('imageId', image.id);
+				cardBody = document.createElement("div");
+				cardBody.setAttribute("class","card-body");
+				imgName = document.createElement("p");
+				imgName.textContent = image.title;
+				card.appendChild(imgPreview);
+				card.appendChild(cardBody);
+				cardBody.appendChild(imgName);
+				card.setAttribute('imageId', image.id); // set a custom HTML attribute
+				imgPreview.addEventListener("mouseover", (e) => { //TODO add the event for cursor on image
+					// dependency via module parameter
+					imageDetails.show({
+						title: image.title,
+						description: image.description,
+						comments: image.comments
+					}); // the list must know the details container
+				}, false);
+				self.listcontainerbody.appendChild(card);
+			});
+			this.listcontainer.style.visibility = "visible";
+			
+
+		};
+		
+		
+
+	}
+	    
+	    
 
 	    this.registerEvents = function(orchestrator) {
 	      this.expenseform.querySelector("input[type='button']").addEventListener('click', (e) => {
@@ -415,7 +405,7 @@
 	        }
 	      });
 
-	      this.closeform.querySelector("input[type='button']").addEventListener('click', (event) => {
+	      /*this.closeform.querySelector("input[type='button']").addEventListener('click', (event) => {
 	        var self = this,
 	          form = event.target.closest("form"),
 	          missionToClose = form.querySelector("input[type = 'hidden']").value;
@@ -431,7 +421,7 @@
 	            }
 	          }
 	        );
-	      });
+	      });*/
 	    };
 
 
@@ -516,17 +506,10 @@
 			document.getElementById("albumsContainer"),
 			document.getElementById("albumsBody"));
 
-		  titleLine = new AlbumTitleLine(document.getElementById("albumTitleLine"),
-		    document.getElementById("albumTitle"));
-		  titleLine.hide(); //hide album title line
-
 	      imagesList = new ImagesList(
 	        alertContainer,
-	        titleLine,
 	        document.getElementById("imagesContainer"),
 	        document.getElementById("imagesBody"));
-
-	      imagesList.setPaginationButtons(); //loading pagination buttons
 
 	      /*imageDetails = new ImageDetails({ // many parameters, wrap them in an
 	        // object
