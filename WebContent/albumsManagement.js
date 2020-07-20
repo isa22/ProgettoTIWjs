@@ -139,6 +139,9 @@
 					console.log("album " + sortedAlbum.getAttribute("albumId") + "has changed position");
 				}
 			);
+
+			//enable save albums order button
+			this.setSaveAlbumsOrderButton();
 		};
 
 		//make albums sortable by drag and drop
@@ -203,6 +206,46 @@
 					dragEl.classList.add('ghost');
 				}, 0)
 			}, false);
+		};
+
+		//enable save albums order button
+		this.setSaveAlbumsOrderButton = function () {
+
+			//retrieve button html reference
+			document.getElementById("saveAlbumsOrder").addEventListener("click", (e) => {
+
+				var albumsIdOrder = [];
+
+				//retrieve album order from html document
+				Array.from(this.listcontainerbody.children).forEach(function (child) {
+					albumsIdOrder.push(child.getAttribute("albumId"));
+				});
+
+				console.log("Sending new albums order to server...");
+				console.log(albumsIdOrder);
+
+				//sending new album order toi server
+				makeJsonCall("POST", "ChangeAlbumOrder", JSON.stringify({"newOrder":albumsIdOrder}),
+					function(req) {
+						if (req.readyState == XMLHttpRequest.DONE) {
+							var message = req.responseText;
+							switch (req.status) {
+								case 200:
+									console.log("New albums order saved successfully");
+									break;
+								case 400: // bad request
+									this.alert.textContent = message;
+									break;
+								case 401: // unauthorized
+									this.alert.textContent = message;
+									break;
+								case 500: // server error
+									this.alert.textContent = message;
+									break;
+							}
+						}
+					});
+				});
 		}
 	}
 

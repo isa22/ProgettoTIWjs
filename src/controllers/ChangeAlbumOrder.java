@@ -1,5 +1,6 @@
 package controllers;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -8,6 +9,7 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,8 +20,11 @@ import com.mysql.cj.xdevapi.JsonArray;
 import com.mysql.cj.xdevapi.JsonParser;
 
 import beans.AlbumOrder;
+import beans.User;
 
+import org.json.HTTP;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import dao.AlbumOrderDAO;
@@ -29,6 +34,7 @@ import utils.ConnectionHandler;
  * Servlet implementation class ChangeAlbumOrder
  */
 @WebServlet("/ChangeAlbumOrder")
+@MultipartConfig
 public class ChangeAlbumOrder extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -67,12 +73,32 @@ public class ChangeAlbumOrder extends HttpServlet {
 			response.getWriter().write(resp.toString());
 			return;
 		}
-		JSONObject data = new JSONObject(request.getReader());
-		int userId = data.getInt("userId");
+		//JSONObject data = new JSONObject(request.getReader().readLine());
+		
+		 StringBuffer jb = new StringBuffer();
+		 String line = null;
+         JSONObject data;
+		  try {
+		    BufferedReader reader = request.getReader();
+		    while ((line = reader.readLine()) != null)
+		      jb.append(line);
+		  } catch (Exception e) { /*report an error*/ }
+
+		  try {
+		    data =  HTTP.toJSONObject(jb.toString());
+		  } catch (JSONException e) {
+		    // crash and burn
+		    throw new IOException("Error parsing JSON request string");
+		  }
+		
+		User userBean = (User) session.getAttribute("user");
+		int userId = (int) userBean.getId();
+		System.out.println(data);
 		JSONArray newOrder = data.getJSONArray("newOrder");
 		List orderList = newOrder.toList();
+		AlbumOrderDAO orderDao;
 		try {
-			AlbumOrderDAO orderDao = new AlbumOrderDAO(connection);
+			orderDao = new AlbumOrderDAO(connection);
 			orderDao.changeAlbumOrder(userId, orderList);
 		}
 		catch(SQLException e) {
@@ -81,6 +107,12 @@ public class ChangeAlbumOrder extends HttpServlet {
 			response.setCharacterEncoding("UTF-8");
 			response.getWriter().write(resp.toString());
 		}
+		
+		//set new album order in user session
+		AlbumOrder newOrderBean = new AlbumOrder();
+		newOrderBean.setOrder(orderList); 
+		userBean.setAlbumOrder(newOrderBean);
+		session.setAttribute("user", userBean);
 		
 	}
 
