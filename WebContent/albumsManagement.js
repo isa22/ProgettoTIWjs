@@ -423,15 +423,6 @@
 			else nextButton.style.visibility = "visible";
 		};
 
-		//TODO understand what this function does
-		this.autoclick = function(missionId) {
-			var e = new Event("click");
-			var selector = "a[missionid='" + missionId + "']";
-			var anchorToClick =
-				(missionId) ? document.querySelector(selector) : this.listcontainerbody.querySelectorAll("a")[0];
-			if (anchorToClick) anchorToClick.dispatchEvent(e);
-		}
-
 	}
 
 	//Image details object //TODO uncompleted object
@@ -456,7 +447,7 @@
 			console.log(image);
 
 			//html elements for showing the images
-			var modalContent, modalHeader, modalTitle, closeButton, span, modalBody;
+			var modalContent, modalHeader, modalTitle, closeButton, closeText, modalBody;
 			var infoContainer, naturalImg, card, cardBody, cardText;
 			var headlineCom, cardCom, cardHeaderCom, author, cardBodyCom, textCom, cardFooterCom, dateCom;
 
@@ -487,23 +478,19 @@
 			closeButton.setAttribute("aria-label","Close");
 			modalHeader.appendChild(closeButton);
 			
-			//create the span  and append it to button
-			span = document.createElement("div");
-			span.setAttribute("aria-hidden","true");
-			span.textContent = '&times;';
-			closeButton.appendChild(span);
+			//create the text and append it to button
+			closeText = document.createElement("div");
+			closeText.setAttribute("aria-hidden","true");
+			closeText.setAttribute("class","small");
+			closeText.textContent = 'close';
+			closeButton.appendChild(closeText);
 			
 			//create the modal body and append it to modal content
 			modalBody = document.createElement("div");
 			modalBody.setAttribute("class","modal-body");
 			modalContent.appendChild(modalBody);
 			
-			console.log(modalContent);
-			
 			this.listcontainerbody.appendChild(modalContent);
-			
-			console.log(this.listcontainer);
-			console.log(this.listcontainerbody);
 			
 			//create the container for the informations that will contain the image, the description and the comments 
 			infoContainer = document.createElement("div");
@@ -586,10 +573,7 @@
 				
 			}
 			
-			this.listcontainer.style.visibility = "visible";
-			this.listcontainerbody.style.visibility = "visible";
-			this.listcontainer.classList.add("show");
-			//$('modalImageContainer').modal('show');
+			$('#modalImageContainer').modal('show');
 			
 
 		};
