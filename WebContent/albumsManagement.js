@@ -485,11 +485,7 @@
 	      this.accomodation.textContent = m.expenses.accomodation;
 	      this.travel.textContent = m.expenses.transportation;
 	    }
-	  }
-
-	   
-	  
-	  
+	
 		                       
 		
 
