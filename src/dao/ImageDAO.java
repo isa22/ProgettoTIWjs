@@ -31,6 +31,7 @@ public class ImageDAO {
 				image.setDate(result.getTimestamp("date"));
 				image.setTitle(result.getString("name"));
 				image.setPath(result.getString("path"));
+				image.setDescription(result.getString("description"));
 				image.setAlbumId(albumId);
 				images.add(image);
 			}
