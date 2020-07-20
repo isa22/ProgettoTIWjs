@@ -21,7 +21,6 @@ public class AlbumDAO {
 		List<String> paths = new ArrayList<String>();
 		String query = "SELECT * from dbtiwexam1920js.album order by date desc";
 		String query2 = "SELECT path from dbtiwexam1920js.image group by album";
-		
 		ResultSet result = null;
 		PreparedStatement pstatement = null;
 		
@@ -58,7 +57,7 @@ public class AlbumDAO {
 			pstatement2 = connection.prepareStatement(query2);
 			result2 = pstatement2.executeQuery();
 			while (result2.next()) {
-				paths.add(result.getString("path"));
+				paths.add(result2.getString("path"));
 			}
 			
 		} catch (SQLException e3) {
