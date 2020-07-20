@@ -96,7 +96,7 @@
 			var self = this;
 
 
-			function sortable(rootEl, onUpdate) {
+			/*function sortable(rootEl, onUpdate) {
 				var dragEl;
 
 				// Making all siblings movable
@@ -154,7 +154,7 @@
 				sortable(arrayAlbums, function (album) {
 					console.log(album);
 				});
-			}
+			}*/
 
 			arrayAlbums.forEach(function(album) { // self visible here, not this
 				card = document.createElement("div");
@@ -176,11 +176,6 @@
 				title.textContent = album.title;
 				cardBody.appendChild(title);
 
-
-				//TODO finish the html element
-				//...
-
-
 				firstImage.addEventListener("click", (e) => {
 					// image clicked
 					imagesList.show(e.target.getAttribute("albumId"), 1); // the list must know the details container
@@ -191,15 +186,6 @@
 			this.listcontainer.style.visibility = "visible";
 
 		};
-
-		//TODO understand what this function does
-		this.autoclick = function(albumId) {
-			var e = new Event("click");
-			var selector = "a[albumId='" + albumId + "']";
-			var anchorToClick =
-				(albumId) ? document.querySelector(selector) : this.listcontainerbody.querySelectorAll("a")[0];
-			if (anchorToClick) anchorToClick.dispatchEvent(e);
-		}
 
 	}
 
@@ -374,24 +360,73 @@
 	}
 
 	//Image details object //TODO uncompleted object
-	function ImageDetails(options) {
-		this.alert = options['alert'];
-		this.detailcontainer = options['detailcontainer'];
-		this.expensecontainer = options['expensecontainer'];
-		this.expenseform = options['expenseform'];
-		this.closeform = options['closeform'];
-		this.date = options['date'];
-		this.destination = options['destination'];
-		this.status = options['status'];
-		this.description = options['description'];
-		this.country = options['country'];
-		this.province = options['province'];
-		this.city = options['city'];
-		this.fund = options['fund'];
-		this.food = options['food'];
-		this.accomodation = options['accomodation'];
-		this.travel = options['transportation'];
+	  function ImageDetails(_alert, _listcontainer, _listcontainerbody) {
+		//reference to alert element
+		this.alert = _alert;
 
+		//reference to  //TODO may not be useful
+		this.listcontainer = _listcontainer;
+
+		//reference to albums container body
+		this.listcontainerbody = _listcontainerbody;
+
+		this.reset = function() {
+			this.listcontainer.style.visibility = "hidden";
+		};
+		
+		
+		//update the page content with the image details
+		this.update = function(title, description, comments) {
+
+			//console.log(arrayImages);
+
+			//html elements for showing the images
+			var card, imgPreview, cardBody, imgName;
+
+			//images per page
+			const imagesPerPage = 5;
+
+			this.listcontainerbody.innerHTML = ""; // empty image list body
+			var self = this;
+
+			//arrayImages offsets
+			var startImageOffset = (page-1)*imagesPerPage;
+			var endImageOffset = startImageOffset + 5;
+
+			//showing 5 page images
+			arrayImages.slice(startImageOffset,endImageOffset).forEach(function(image) { // self visible here, not this
+				card = document.createElement("div");
+				card.setAttribute("class","card mb-4 shadow-sm");
+				imgPreview = document.createElement("img");
+				imgPreview.setAttribute("class","card-img-top thumbnailsec");
+				imgPreview.setAttribute("src",getContextPath() + image.path);
+				imgPreview.setAttribute('imageId', image.id);
+				cardBody = document.createElement("div");
+				cardBody.setAttribute("class","card-body");
+				imgName = document.createElement("p");
+				imgName.textContent = image.title;
+				card.appendChild(imgPreview);
+				card.appendChild(cardBody);
+				cardBody.appendChild(imgName);
+				card.setAttribute('imageId', image.id); // set a custom HTML attribute
+				imgPreview.addEventListener("mouseover", (e) => { //TODO add the event for cursor on image
+					// dependency via module parameter
+					imageDetails.show({
+						title: image.title,
+						description: image.description,
+						comments: image.comments
+					}); // the list must know the details container
+				}, false);
+				self.listcontainerbody.appendChild(card);
+			});
+			this.listcontainer.style.visibility = "visible";
+			
+
+		};
+		
+		
+
+	
 		this.registerEvents = function(orchestrator) {
 			this.expenseform.querySelector("input[type='button']").addEventListener('click', (e) => {
 				var form = e.target.closest("form");
