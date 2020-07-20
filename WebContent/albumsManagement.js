@@ -35,12 +35,11 @@
 		//reference to albums container body
 		this.listcontainerbody = _listcontainerbody;
 
-		//hide the html element
+		//clears the html element content
 		this.reset = function() {
 			this.listcontainer.style.visibility = "hidden";
+			this.listcontainerbody.innerHTML="";
 		};
-
-
 
 		//call server for albums data and show them in the page
 		this.show = function(next) {
@@ -158,7 +157,7 @@
 
 			arrayAlbums.forEach(function(album) { // self visible here, not this
 				card = document.createElement("div");
-				card.setAttribute("class", "card mb-4 mx-auto d-block shadow-sm");
+				card.setAttribute("class", "card mb-4 mx-auto d-block shadow-sm w-50");
 				imgLink = document.createElement("a");
 				card.setAttribute("id", album.id);
 				card.appendChild(imgLink);
@@ -178,6 +177,7 @@
 
 				firstImage.addEventListener("click", (e) => {
 					// image clicked
+					self.reset();
 					imagesList.show(e.target.getAttribute("albumId"), 1); // the list must know the details container
 				}, false);
 				imgLink.href = "#";
@@ -189,16 +189,26 @@
 
 	}
 
-	//album title bar
-	function AlbumTitleLine(_albumTitleLine, _albumTitle){
+	//album title bar, handles return to albums list event
+	function AlbumTitleLine(_albumTitleLine, _albumTitle, _albumList, _imageList){
 		this.albumTitleLine = _albumTitleLine;
 		this.albumTitlelabel = _albumTitle;
+		this.albumList = _albumList;
+		this.imageList = _imageList;
 		this.show = function(albumTitle){
 			this.albumTitleLine.style.visibility="visible";
 			this.albumTitlelabel.textContent = albumTitle;
 		};
-		this.hide = function(){
+		this.reset = function (){
 			this.albumTitleLine.style.visibility="hidden";
+			//this.albumTitleLine.innerHTML="";
+		};
+		this.setReturnToAlbums = function () {
+			document.getElementById("returnToAlbum").addEventListener("click", (e) => {
+				this.imageList.reset();
+				this.albumList.show();
+				this.reset();
+			});
 		}
 	}
 
@@ -218,6 +228,9 @@
 
 		this.reset = function() {
 			this.listcontainer.style.visibility = "hidden";
+			this.listcontainerbody.innerHTML="";
+			document.getElementById("next").style.visibility="hidden";
+			document.getElementById("previous").style.visibility="hidden";
 		};
 
 		//loaded album data
@@ -300,7 +313,7 @@
 			this.currentNumOfPages = Math.ceil(self.currentAlbumImages.length/this.imagesPerPage);
 
 			//html elements for showing the images
-			var card, imgPreview, cardBody, imgName;
+			var card, imgPreview, cardBody, imgName, col;
 
 			this.listcontainerbody.innerHTML = ""; // empty image list body
 
@@ -313,6 +326,8 @@
 
 			//showing 5 page images
 			arrayImages.slice(startImageOffset,endImageOffset).forEach(function(image) { // self visible here, not this
+				col = document.createElement("div");
+				col.setAttribute("class","col-md-5ths col-xs-6");
 				card = document.createElement("div");
 				card.setAttribute("class","card mb-4 shadow-sm");
 				imgPreview = document.createElement("img");
@@ -322,6 +337,7 @@
 				cardBody.setAttribute("class","card-body");
 				imgName = document.createElement("p");
 				imgName.textContent = image.title;
+				col.appendChild(card);
 				card.appendChild(imgPreview);
 				card.appendChild(cardBody);
 				cardBody.appendChild(imgName);
@@ -334,7 +350,7 @@
 						comments: image.comments
 					}); // the list must know the details container
 				}, false);
-				self.listcontainerbody.appendChild(card);
+				self.listcontainerbody.appendChild(col);
 			});
 			this.listcontainer.style.visibility = "visible";
 
@@ -551,14 +567,18 @@
 				document.getElementById("albumsBody"));
 
 			titleLine = new AlbumTitleLine(document.getElementById("albumTitleLine"),
-				document.getElementById("albumTitle"));
-			titleLine.hide(); //hide album title line
+				document.getElementById("albumTitle"), albumList, null);
+			titleLine.reset(); //hide album title line
 
 			imagesList = new ImagesList(
 				alertContainer,
 				titleLine,
 				document.getElementById("imagesContainer"),
 				document.getElementById("imagesBody"));
+
+			titleLine.imageList = imagesList; //set image list to titleLine
+
+			titleLine.setReturnToAlbums();
 
 			imagesList.setPaginationButtons(); //loading pagination buttons
 
