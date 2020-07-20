@@ -333,6 +333,8 @@
 				imgPreview = document.createElement("img");
 				imgPreview.setAttribute("class","card-img-top thumbnailsec");
 				imgPreview.setAttribute("src",getContextPath() + image.path);
+				imgPreview.setAttribute("data-toggle", "modal");
+				imgPreview.setAttribute("data-target", "modalImageContainer");
 				cardBody = document.createElement("div");
 				cardBody.setAttribute("class","card-body");
 				imgName = document.createElement("p");
@@ -344,13 +346,12 @@
 				card.setAttribute('imageId', image.id); // set a custom HTML attribute
 				imgPreview.addEventListener("mouseover", (e) => { //TODO add the event for cursor on image
 					// dependency via module parameter
-					imageDetails.update({
-						image: image
-					}); // the list must know the details container
+					imageDetails.update(image); // the list must know the details container
 				}, false);
 				self.listcontainerbody.appendChild(col);
 			});
 			this.listcontainer.style.visibility = "visible";
+			console.log(this.listcontainer);
 
 			//hide/show buttons
 			var previousButton = document.getElementById("previous");
@@ -397,26 +398,28 @@
 			//html elements for showing the images
 			var modalContent, modalHeader, modalTitle, closeButton, span, modalBody;
 			var infoContainer, naturalImg, card, cardBody, cardText;
-			
+			var headlineCom, cardCom, cardHeaderCom, author, cardBodyCom, textCom, cardFooterCom, dateCom;
 
 			this.listcontainerbody.innerHTML = ""; // empty image list body
 			var self = this;
 
-
+			//create modal content and set its class
 			modalContent = document.createElement("div");
 			modalContent.setAttribute("class","modal-content");
 			
+			//create modal header, set its class and append it to modal content
 			modalHeader = document.createElement("div");
 			modalHeader.setAttribute("class","modal-header");
 			modalContent.appendChild(modalHeader);
 			
+			//create modal title containing the image title, set its class, set its id and append it to modal header
 			modalTitle = document.createElement("h5");
 			modalTitle.setAttribute("class","modal-title");
 			modalTitle.setAttribute('titleId',"modalTitle");
 			modalTitle.textContent = image.title;
 			modalHeader.appendChild(modalTitle);
 			
-			
+			//create the button to close the modal, of type button and append it to modal header
 			closeButton = document.createElement("button");
 			closeButton.setAttribute("type","button");
 			closeButton.setAttribute("class","close");
@@ -424,43 +427,109 @@
 			closeButton.setAttribute("aria-label","Close");
 			modalHeader.appendChild(closeButton);
 			
+			//create the span  and append it to button
 			span = document.createElement("div");
 			span.setAttribute("aria-hidden","true");
-			span.textContent = '&times;'
+			span.textContent = '&times;';
 			closeButton.appendChild(span);
 			
+			//create the modal body and append it to modal content
 			modalBody = document.createElement("div");
 			modalBody.setAttribute("class","modal-body");
 			modalContent.appendChild(modalBody);
 			
-			self.listcontainerbody.appendChild(modalContent);
+			console.log(modalContent);
 			
-			/*arrayImages.slice(startImageOffset,endImageOffset).forEach(function(image) { // self visible here, not this
-				card = document.createElement("div");
-				card.setAttribute("class","card mb-4 shadow-sm");
-				imgPreview = document.createElement("img");
-				imgPreview.setAttribute("class","card-img-top thumbnailsec");
-				imgPreview.setAttribute("src",getContextPath() + image.path);
-				imgPreview.setAttribute('imageId', image.id);
-				cardBody = document.createElement("div");
-				cardBody.setAttribute("class","card-body");
-				imgName = document.createElement("p");
-				imgName.textContent = image.title;
-				card.appendChild(imgPreview);
-				card.appendChild(cardBody);
-				cardBody.appendChild(imgName);
-				card.setAttribute('imageId', image.id); // set a custom HTML attribute
-				imgPreview.addEventListener("mouseover", (e) => { //TODO add the event for cursor on image
-					// dependency via module parameter
-					imageDetails.show({
-						title: image.title,
-						description: image.description,
-						comments: image.comments
-					}); // the list must know the details container
-				}, false);
-				self.listcontainerbody.appendChild(modalContent);
-			});*/
+			this.listcontainerbody.appendChild(modalContent);
+			
+			console.log(this.listcontainer);
+			console.log(this.listcontainerbody);
+			
+			//create the container for the informations that will contain the image, the description and the comments 
+			infoContainer = document.createElement("div");
+			infoContainer.setAttribute("class","my-sm-2");
+			modalBody.appendChild(infoContainer);
+			
+			//create the image and append to the info container
+			naturalImg = document.createElement("img");
+			naturalImg.setAttribute("class","my-sm-2 mx-auto d-block");
+			naturalImg.setAttribute("src",getContextPath() + image.path);
+			naturalImg.setAttribute("alt", image.title);
+			naturalImg.setAttribute('imageId', image.id);
+			infoContainer.appendChild(naturalImg);
+			
+			
+			card = document.createElement("div");
+			card.setAttribute("class","card my-sm-2");
+			infoContainer.appendChild(card);
+			
+			cardBody = document.createElement("div");
+			cardBody.setAttribute("class","card-body");
+			card.appendChild(cardBody);
+			
+			cardText = document.createElement("p");
+			cardText.setAttribute("class","card-text");
+			cardText.textContent = image.description;
+			cardBody.appendChild(cardText);
+			
+			if(image.comments == null){
+				headlineCom = document.createElement("h5");
+				headlineCom.setAttribute("class","mt-sm-5 mb-sm-3");
+				headlineCom.textContent = 'Comments';
+				cardBody.appendChild(headlineCom);
+				
+				cardCom = document.createElement("div");
+				cardCom.setAttribute("class","card");
+				cardBody.appendChild(cardCom);
+				
+				cardBodyCom  = document.createElement("div");
+				cardBodyCom.setAttribute("class","card-body");
+				cardBodyCom.textContent = 'No comments';
+				cardCom.appendChild(cardBodyCom);
+				
+			}
+			else{
+				headlineCom = document.createElement("h5");
+				headlineCom.setAttribute("class","mt-sm-5 mb-sm-3");
+				headlineCom.textContent = 'Comments';
+				cardBody.appendChild(headlineCom);
+				
+				image.comments.forEach(function(comment) {
+					cardCom = document.createElement("div");
+					cardCom.setAttribute("class","card");
+					cardBody.appendChild(cardCom);
+					
+					cardHeaderCom = document.createElement("div");
+					cardHeaderCom.setAttribute("class","card-header");
+					cardCom.appendChild(cardHeaderCom);
+					
+					author = document.createElement("strong");
+					author.setAttribute("class","d-block text-gray-dark");
+					author.textContent = comment.username;
+					cardHeaderCom.appendChild(author);
+					
+					cardBodyCom = document.createElement("div");
+					cardBodyCom.setAttribute("class","card-body");
+					cardBodyCom.textContent = comment.text;
+					cardCom.appendChild(cardBodyCom);
+					
+					cardFooterCom = document.createElement("div");
+					cardFooterCom.setAttribute("class","card-footer");
+					cardCom.appendChild(cardFooterCom);
+					
+					dateCom = document.createElement("span");
+					dateCom.setAttribute("class","text-muted small");
+					dateCom.textContent = comment.timestamp;
+					cardFooterCom.appendChild(dateCom);
+					
+				});
+				
+			}
+			
 			this.listcontainer.style.visibility = "visible";
+			this.listcontainerbody.style.visibility = "visible";
+			this.listcontainer.classList.add("show");
+			//$('modalImageContainer').modal('show');
 			
 
 		};
