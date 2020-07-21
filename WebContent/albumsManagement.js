@@ -413,7 +413,7 @@
 				card.appendChild(cardBody);
 				cardBody.appendChild(imgName);
 				card.setAttribute('imageId', image.id); // set a custom HTML attribute
-				imgPreview.addEventListener("mouseover", (e) => { //TODO add the event for cursor on image
+				imgPreview.addEventListener("mouseover", (e) => {
 					// dependency via module parameter
 					imageDetails.update(image); // the list must know the details container
 				}, false);
@@ -459,7 +459,8 @@
 			var modalContent, modalHeader, modalTitle, closeButton, closeText, modalBody;
 			var infoContainer, naturalImg, card, cardBody, cardText;
 			var headlineCom, cardCom, cardHeaderCom, author, cardBodyCom, textCom, cardFooterCom, dateCom;
-
+			var titleForm, form, textForm, label, textArea, imageParam, buttonForm;
+			
 			this.listcontainerbody.innerHTML = ""; // empty image list body
 			var self = this;
 
@@ -528,7 +529,8 @@
 			cardText.textContent = image.description;
 			cardBody.appendChild(cardText);
 			
-			if(image.comments.lenght == undefined){
+			
+			if(image.comments[0] == undefined){
 				headlineCom = document.createElement("h5");
 				headlineCom.setAttribute("class","mt-sm-5 mb-sm-3");
 				headlineCom.textContent = 'Comments';
@@ -582,21 +584,67 @@
 				
 			}
 			
+			titleForm = document.createElement("h5");
+			titleForm.setAttribute("class","mt-sm-5 mb-sm-3");
+			titleForm.textContent = "Submit a comment";
+			cardBody.appendChild(titleForm);
+			
+			form = document.createElement("form");
+			form.setAttribute("action","CreateComment");
+			form.setAttribute("id","form");
+			form.setAttribute("method","POST");
+			cardBody.appendChild(form);
+			
+			textForm = document.createElement("div");
+			textForm.setAttribute("class","form-group");
+			form.appendChild(textForm);
+			
+			label = document.createElement("label");
+			label.setAttribute("for","comment");
+			label.textContent = "Comment:";
+			textForm.appendChild(label);
+			
+			textArea = document.createElement("textarea");
+			textArea.setAttribute("class","form-control");
+			textArea.setAttribute("name","comment");
+			textArea.setAttribute("id","comment");
+			textArea.setAttribute("rows","5");
+			textArea.setAttribute("required", "");
+			textForm.appendChild(textArea);
+			
+			imageParam = document.createElement("input");
+			imageParam.setAttribute("type","hidden");
+			imageParam.setAttribute("name","imageId");
+			imageParam.setAttribute("value", image.id);
+			form.appendChild(imageParam);
+			
+			buttonForm = document.createElement("button");
+			buttonForm.setAttribute("class","my-sm-4 btn btn-outline-primary");
+			buttonForm.setAttribute("type","submit");
+			buttonForm.setAttribute("id","button");
+			buttonForm.textContent = "Submit Comment";
+			form.appendChild(buttonForm);
+			
+			
 			$('#modalImageContainer').modal('show');
 			
+		    $("#button").click(function(){        
+		        $("#form").submit(); // Submit the form
+		        
+		    }); 
 
 		};
 		
 		
 
 	
-		this.registerEvents = function(orchestrator) {
-			this.expenseform.querySelector("input[type='button']").addEventListener('click', (e) => {
+		this.registerEvents = function() {
+			this.form.querySelector("input[type='button']").addEventListener('click', (e) => {
 				var form = e.target.closest("form");
 				if (form.checkValidity()) {
 					var self = this,
 						missionToReport = form.querySelector("input[type = 'hidden']").value;
-					makeCall("POST", 'CreateExpensesReport', form,
+					makeFormCall("POST", 'CreateComment', form,
 						function(req) {
 							if (req.readyState == 4) {
 								var message = req.responseText;
@@ -613,23 +661,6 @@
 				}
 			});
 
-			this.closeform.querySelector("input[type='button']").addEventListener('click', (event) => {
-				var self = this,
-					form = event.target.closest("form"),
-					missionToClose = form.querySelector("input[type = 'hidden']").value;
-				makeCall("POST", 'CloseMission', form,
-					function(req) {
-						if (req.readyState == 4) {
-							var message = req.responseText;
-							if (req.status == 200) {
-								orchestrator.refresh(missionToClose);
-							} else {
-								self.alert.textContent = message;
-							}
-						}
-					}
-				);
-			});
 		};
 
 	  }
@@ -678,7 +709,7 @@
 		};
 
 
-		this.refresh = function(currentMission) {
+		this.refresh = function() {
 			alertContainer.textContent = "";
 			imagesList.reset();
 			albumList.show();
