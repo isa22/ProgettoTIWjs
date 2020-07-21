@@ -82,12 +82,6 @@
 		  //retrieving data from forms and putting them in formData
 		  var formData = new FormData(document.getElementById("registerForm"));
 
-		  //var requestBody = "username=" +formData.get("username")+ "&password1=" + formData.get("password1") + "&password2=" + formData.get("password2") + "&email=" + formData.get("email");
-
-		  /*formData.append("username",username.value);
-		  formData.append("password1",password1.value);
-		  formData.append("password2",password2.value);
-		  formData.append("email",email.value);*/
           console.log("Credentials: " + formData.get("username") + " " + formData.get("password1") + " " + formData.get("password2") + " " + formData.get("email"));
 		  //sending form to server
 		  makeFormCall("POST", 'Register', formData,
