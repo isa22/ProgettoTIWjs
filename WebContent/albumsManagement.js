@@ -748,7 +748,7 @@
 			alertContainer.textContent = "";
 			imagesList.reset();
 			albumList.show();
-			imageDetails.reset();
+			//imageDetails.reset();
 		};
 	}
 })();
