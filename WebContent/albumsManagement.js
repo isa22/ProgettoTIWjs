@@ -16,11 +16,42 @@
 
 	// Constructors of view components
 
-	function PersonalMessage(_username, messagecontainer) { //TODO added by prof, actually I don't know the its purpose
+	function PersonalMessage(_username, messagecontainer, _logoutButton) {
 		this.username = _username;
+		this.logoutButton = _logoutButton;
+
+		//display username
 		this.show = function() {
 			messagecontainer.textContent = "Username: " + this.username;
-		}
+		};
+
+		//register event of logout for logoutButton
+		this.setLogoutButton = function () {
+			this.logoutButton.addEventListener("click", (e) => {
+				makeSearchCall("POST", "Logout",
+					function(req) {
+						if (req.readyState == XMLHttpRequest.DONE) {
+							var message = req.responseText;
+							switch (req.status) {
+								case 200:
+									console.log("Response = " + message);
+									window.location.href = "Login.html";			 //redirect to login
+									break;
+								case 400: // bad request
+									this.alert.textContent = "Error code 400 :" + message;
+									break;
+								case 401: // unauthorized
+									this.alert.textContent = "Error code 401 :" + message;
+									break;
+								case 500: // server error
+									this.alert.textContent = "Error code 500 :" + message;
+									break;
+							}
+						}
+					}
+				);
+			});
+		};
 	}
 
 
@@ -158,60 +189,80 @@
 
 			console.log("rootEl = " + rootEl.getAttribute("id"));
 			console.log(Array.from(rootEl.children));
-			// Making all siblings movable
+
+			// Set all children movable
 			Array.from(rootEl.children).forEach(function (itemEl) {
 				console.log("itemEl = " + itemEl.getAttribute("id") + " " + itemEl.getAttribute("sortable") );
 				itemEl.draggable = true;
 			});
 
-			// Function responsible for sorting
-			function _onDragOver(evt) {
-				evt.preventDefault();
-				evt.dataTransfer.dropEffect = 'move';
+			// Function triggered when a dragged element is over an other
+			function _onDragOver(e) {
+
+				//disable triggering event while handling this one
+				e.preventDefault();
+
+				//change cursor icon
+				e.dataTransfer.dropEffect = 'move';
 
 				console.log("dragging: " + dragEl.tagName);
 
-				var target = evt.target;
+				//target that triggered the event (note: it isn't the one that is being dragged)
+				var target = e.target;
+
+				//choosing if the destination target is suitable to change its position in the album list
+				//with the dragged element
 				if( target && target !== dragEl && target.getAttribute("sortable") === "true" ){
-					var rect = target.getBoundingClientRect();
-					var next = (evt.clientY - rect.top)/(rect.bottom - rect.top) > .5;
+
+					var rect = target.getBoundingClientRect(); //target card rect (used to get its size on screen)
+					var next = (e.clientY - rect.top)/(rect.bottom - rect.top) > .5; //true if we are up the target that triggered the event
+
+					//thanks to "next" we understand where to put in the albumList the dragged album
 					rootEl.insertBefore(dragEl, next && target.nextSibling || target);
+
 				}
 			}
 
 			// End of sorting
-			function _onDragEnd(evt){
-				evt.preventDefault();
+			function _onDragEnd(e){
 
+				//disable triggering event while handling this one
+				e.preventDefault();
+
+				//make dragged element look normal (no more transparent)
 				dragEl.classList.remove('ghost');
+
+				//remove drag and drop events listener
 				rootEl.removeEventListener('dragover', _onDragOver, false);
 				rootEl.removeEventListener('dragend', _onDragEnd, false);
 
-
-				// Notification about the end of sorting
+				// Notification about the end of sorting (for debug purpose)
 				onUpdate(dragEl);
 			}
 
-			// Sorting starts
+			//Drag and drop initialization
 			rootEl.addEventListener('dragstart', function (evt){
+
+				//making sure to drag the right html element
 				var draggingParentOrChild = evt.target.getAttribute("sortable")==="true";
 
-				dragEl = (draggingParentOrChild)?evt.target:evt.target.parentNode; // Remembering an element that will be moved
+				//storing in "dragEl" the dragged element
+				dragEl = (draggingParentOrChild)?evt.target:evt.target.parentNode;
 
-				// Limiting the movement type
+				//Setting the drag effect
 				evt.dataTransfer.effectAllowed = 'move';
+
+				//Setting data that are transferred while dropping
 				evt.dataTransfer.setData('Text', dragEl.textContent);
 
-
-				// Subscribing to the events at dnd
+				// Subscribing drag and drop events
 				rootEl.addEventListener('dragover', _onDragOver, false);
 				rootEl.addEventListener('dragend', _onDragEnd, false);
 
-
+				//timeout with 0 wait seconds is a trick to schedule the callback
+				//to be run asynchronously, after the shortest possible delay
 				setTimeout(function () {
-					// If this action is performed without setTimeout, then
-					// the moved object will be of this class.
-					dragEl.classList.add('ghost');
+					dragEl.classList.add('ghost'); //set the dragged object to be transparent
 				}, 0)
 			}, false);
 		};
@@ -670,8 +721,10 @@
 		var alertContainer = document.getElementById("alertMessage");
 		this.start = function() {
 			var personalMessage = new PersonalMessage(sessionStorage.getItem('username'),
-				document.getElementById("personalMessage"));
+				document.getElementById("personalMessage"),
+				document.getElementById("logoutButton"));
 			personalMessage.show();
+			personalMessage.setLogoutButton();
 
 			albumList = new AlbumsList(
 				alertContainer,

@@ -127,6 +127,10 @@ li{
     user-drag: none;
 }
 
+.force-ratio{
+	padding-top: 65%
+}
+
 }
 
 @media (min-width: 768px) {
