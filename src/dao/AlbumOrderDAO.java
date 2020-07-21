@@ -46,14 +46,14 @@ public class AlbumOrderDAO {
 	//update album order after a submit of the client
 	public void changeAlbumOrder(int userId, List order) throws SQLException{
 		
-		String query = "UPDATE dbtiwexam1920js.albumorder SET aulbumorder = ? WHERE user = ? and album = ?";
+		String query = "UPDATE dbtiwexam1920js.albumorder SET albumorder = ? WHERE user = ? and album = ?";
 		PreparedStatement pstatement = null;
 		for (int i = 1 ; i<=order.size(); i++) {
 			try {
 				pstatement = connection.prepareStatement(query);
 				pstatement.setInt(1, i);
 				pstatement.setInt(2, userId);
-				pstatement.setInt(2, (int) order.get(i-1));
+				pstatement.setInt(3, (int) order.get(i-1));
 				pstatement.executeUpdate();
 			}
 			catch (SQLException e) {

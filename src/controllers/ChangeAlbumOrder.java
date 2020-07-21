@@ -2,9 +2,11 @@ package controllers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -16,8 +18,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.mysql.cj.xdevapi.JsonArray;
-import com.mysql.cj.xdevapi.JsonParser;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import beans.AlbumOrder;
 import beans.User;
@@ -93,9 +99,11 @@ public class ChangeAlbumOrder extends HttpServlet {
 		
 		User userBean = (User) session.getAttribute("user");
 		int userId = (int) userBean.getId();
-		System.out.println(data);
-		JSONArray newOrder = data.getJSONArray("newOrder");
-		List orderList = newOrder.toList();
+		String orderString = (String) data.get("Method");
+		JsonObject newOrder  = new JsonParser().parse(orderString).getAsJsonObject();
+		JsonElement newOrderArray = newOrder.get("newOrder");
+		Type listType = new TypeToken<ArrayList<Integer>>() {}.getType();
+		List<Integer> orderList = new Gson().fromJson(newOrderArray, listType);
 		AlbumOrderDAO orderDao;
 		try {
 			orderDao = new AlbumOrderDAO(connection);
