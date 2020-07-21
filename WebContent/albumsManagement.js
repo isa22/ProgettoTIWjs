@@ -450,7 +450,7 @@
 				card.setAttribute('imageId', image.id); // set a custom HTML attribute
 				imgPreview.addEventListener("mouseover", (e) => {
 					// dependency via module parameter
-					imageDetails.update(image); // the list must know the details container
+					imageDetails.update(image, image.comments); // the list must know the details container
 				}, false);
 				self.listcontainerbody.appendChild(col);
 			});
@@ -486,10 +486,12 @@
 		
 		
 		//update the page content with the image details
-		this.update = function(image) {
+		this.update = function(image, comments) {
 
 			console.log(image);
-
+			
+			this.currentImage = image;
+			
 			//html elements for showing the images
 			var modalContent, modalHeader, modalTitle, closeButton, closeText, modalBody;
 			var infoContainer, naturalImg, card, cardBody, cardText;
@@ -565,7 +567,7 @@
 			cardBody.appendChild(cardText);
 			
 			
-			if(image.comments[0] == undefined){
+			if(comments[0] == undefined){
 				headlineCom = document.createElement("h5");
 				headlineCom.setAttribute("class","mt-sm-5 mb-sm-3");
 				headlineCom.textContent = 'Comments';
@@ -587,7 +589,7 @@
 				headlineCom.textContent = 'Comments';
 				cardBody.appendChild(headlineCom);
 				
-				image.comments.forEach(function(comment) {
+				comments.forEach(function(comment) {
 					cardCom = document.createElement("div");
 					cardCom.setAttribute("class","card");
 					cardBody.appendChild(cardCom);
@@ -663,11 +665,32 @@
 			
 			$('#modalImageContainer').modal('show');
 			
-		    $("#button").click(function(){        
-		        $("#form").submit(); // Submit the form
+		    $("#button").click(function(){   
+		    	makeFormCall('POST', 'CreateComment', new FormData(form) , 
+		    			function(req){
+		    		if (req.readyState == XMLHttpRequest.DONE) {
+						var message = req.responseText;
+						switch (req.status) {
+							case 200:
+								var comments = JSON.parse(message);
+								self.update(image, comments);
+								break;
+							case 400: // bad request
+								self.alert.textContent = "Error code 400 :" + message;
+								break;
+							case 401: // unauthorized
+								self.alert.textContent = "Error code 401 :" + message;
+								break;
+							case 500: // server error
+								self.alert.textContent = "Error code 500 :" + message;
+								break;
+						}
+					}
+		    				
+		    	})
 		        
 		    }); 
-
+		    
 		};
 		
 		
