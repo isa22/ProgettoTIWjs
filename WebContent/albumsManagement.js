@@ -62,7 +62,7 @@
 		//reference to alert element
 		this.alert = _alert;
 
-		//reference to albums container header //TODO may not be useful
+		//reference to albums container header
 		this.listcontainer = _listcontainer;
 
 		//reference to albums container body
@@ -71,7 +71,7 @@
 		//reference to external container (used to collapse album area)
 		this.externalContainer = _extContainer;
 
-		//clears the html element content
+		//clears the html element content and hides it
 		this.reset = function() {
 			this.listcontainer.style.visibility = "hidden";
 			this.listcontainerbody.innerHTML="";
@@ -79,25 +79,9 @@
 		};
 
 		//call server for albums data and show them in the page
-		this.show = function(next) {
+		this.show = function() {
 			var self = this;
 			makeSearchCall("GET", "Home",
-				/*function(req) {
-                  if (req.readyState == 4) {
-                    var message = req.responseText;
-                    if (req.status == 200) {
-                      var albumsToShow = JSON.parse(req.responseText);
-                      if (albumsToShow.length == 0) {
-                        self.alert.textContent = "No albums found!";
-                        return;
-                      }
-                      self.update(albumsToShow); // self visible by closure
-                      if (next) next(); // show the default element of the list if present
-                    }
-                  } else {
-                      self.alert.textContent = message;
-                  }
-                }*/
 				function(req) {
 					if (req.readyState == XMLHttpRequest.DONE) {
 						var message = req.responseText;
@@ -107,7 +91,6 @@
 								var albumsToShow = JSON.parse(req.responseText);
 								if (albumsToShow.length == 0) {self.alert.textContent = "No albums found!"; return;}
 								self.update(albumsToShow); // self visible by closure
-								if (next) next(); // show the default element of the list if present
 								break;
 							case 400: // bad request
 								self.alert.textContent = "Error code 400 :" + message;
@@ -133,17 +116,16 @@
 			this.externalContainer.appendChild(this.listcontainer);
 
 			// build updated list
+
+			// "self" visible here instead of "this" (this is a trick to make "this" visible in nested functions)
 			var self = this;
 
-			arrayAlbums.forEach(function(album) { // self visible here, not this
+			arrayAlbums.forEach(function(album) {
 				card = document.createElement("div");
 				card.setAttribute("sortable", "true");
 				card.setAttribute("albumId", album.id);
 				card.setAttribute("class", "card mb-4 mx-auto d-block shadow-sm w-50");
-				//imgLink = document.createElement("a");
 				card.setAttribute("id", album.id);
-				//card.appendChild(imgLink);
-				//imgLink.setAttribute('albumId', album.id);
 				firstImage = document.createElement("img");
 				firstImage.setAttribute("src", getContextPath() + album.firstImagePath);
 				firstImage.setAttribute("class", "card-img-top thumbnailsec");
@@ -315,14 +297,19 @@
 		this.albumTitlelabel = _albumTitle;
 		this.albumList = _albumList;
 		this.imageList = _imageList;
+
+		//show album title bar
 		this.show = function(albumTitle){
 			this.albumTitleLine.style.visibility="visible";
 			this.albumTitlelabel.textContent = albumTitle;
 		};
+
+		//hide album title bar
 		this.reset = function (){
 			this.albumTitleLine.style.visibility="hidden";
-			//this.albumTitleLine.innerHTML="";
 		};
+
+		//return to album list
 		this.setReturnToAlbums = function () {
 			document.getElementById("returnToAlbum").addEventListener("click", (e) => {
 				this.imageList.reset();
@@ -332,7 +319,7 @@
 		}
 	}
 
-	//List of images object //TODO uncompleted object
+	//List of images object
 	function ImagesList(_alert,_titleLine, _listcontainer, _listcontainerbody) {
 
 		//reference to alert element
@@ -340,12 +327,13 @@
 
 		this.titleLine = _titleLine;
 
-		//reference to albums container header //TODO may not be useful
+		//reference to albums container header
 		this.listcontainer = _listcontainer;
 
 		//reference to albums container body
 		this.listcontainerbody = _listcontainerbody;
 
+		//clears the html element content and hides it
 		this.reset = function() {
 			this.listcontainer.style.visibility = "hidden";
 			this.listcontainerbody.innerHTML="";
@@ -356,7 +344,6 @@
 		//loaded album data
 		this.currentAlbumImages = null;
 		this.currentNumOfPages = null;
-		this.currentAlbumId = null;
 		this.currentAlbumTitle = "albumTitle";
 		this.currentPage = 1;
 		this.imagesPerPage = 5; //images per page
@@ -364,6 +351,7 @@
 		//call server for album images and show them in the page
 		this.show = function(albumId) {
 			var self = this;
+
 			//download album images
 			makeSearchCall("GET", "Album?albumId="+albumId,
 				function(req) {
@@ -378,7 +366,6 @@
 								}
 								self.currentAlbumTitle = albumImages.title;
 								self.update(albumImages.images, 1); // self visible by closure
-								//if (next) next(); // show the default element of the list if present
 								break;
 							case 400: // bad request
 								self.alert.textContent = "Error code 400 :" + message;
@@ -398,9 +385,6 @@
 
 		//registering navigation buttons events
 		this.setPaginationButtons = function () {
-			/*console.log("Num of pages: " + numOfPages);
-            console.log("Num of images: " + this.currentAlbumImages.length);
-            console.log("images per page: " + this.imagesPerPage);*/
 			console.log("Current page: " + this.currentPage);
 
 			var previousButton = document.getElementById("previous");
@@ -424,7 +408,7 @@
 		//update the page content about albums
 		this.update = function(arrayImages, page) {
 
-			//rename this
+			//rename this to make it visible in inner functions
 			var self = this;
 
 			//store current album data
@@ -485,12 +469,12 @@
 
 	}
 
-	//Image details object //TODO uncompleted object
+	//Image details object
 	  function ImageDetails(_alert, _listcontainer, _listcontainerbody) {
 		//reference to alert element
 		this.alert = _alert;
 
-		//reference to  //TODO may not be useful
+		//reference to
 		this.listcontainer = _listcontainer;
 
 		//reference to albums container body
@@ -716,10 +700,13 @@
 
 	  }
 
-	//TODO uncompleted object
+     //Organize and init all html elements and js objects after page load
 	function PageOrchestrator() {
+
+		//create all object that manages the page behaviour
 		var alertContainer = document.getElementById("alertMessage");
 		this.start = function() {
+
 			var personalMessage = new PersonalMessage(sessionStorage.getItem('username'),
 				document.getElementById("personalMessage"),
 				document.getElementById("logoutButton"));
@@ -754,22 +741,14 @@
 					alertContainer, 
 					document.getElementById("modalImageContainer"),
 					document.getElementById("modalImageBody"));
-            
-
-			/*document.querySelector("a[href='Logout']").addEventListener('click', () => {
-              window.sessionStorage.removeItem('username');
-            })*/
 		};
 
-
+		//bring page to default state
 		this.refresh = function() {
 			alertContainer.textContent = "";
 			imagesList.reset();
 			albumList.show();
-			//imageDetails.reset();
-			/*imagesList.show(function() {
-              imagesList.autoclick(currentMission);
-            });*/ // closure preserves visibility of this
+			imageDetails.reset();
 		};
 	}
 })();
