@@ -20,7 +20,7 @@ public class CommentDAO {
 	
 	public List<Comment> findCommentsByImage(int imageId) throws SQLException {
 		List<Comment> comments = new ArrayList<Comment>();
-		String query = "SELECT * from dbtiwexam1920js.comment where image = ?";
+		String query = "SELECT c.*, u.username from dbtiwexam1920js.comment c inner join dbtiwexam1920js.user u on c.user = u.id where c.image = ?";
 		
 		ResultSet result = null;
 		PreparedStatement pstatement = null;
@@ -34,6 +34,7 @@ public class CommentDAO {
 				comment.setTimestamp(result.getTimestamp("time"));
 				comment.setText(StringEscapeUtils.unescapeJava(result.getString("content")));
 				comment.setUserId(result.getInt("user"));
+				comment.setUsername(StringEscapeUtils.unescapeJava(result.getString("username")));
 				comment.setImageId(imageId);
 				comments.add(comment);
 			}

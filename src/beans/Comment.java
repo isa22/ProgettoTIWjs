@@ -6,6 +6,7 @@ public class Comment {
 	private Timestamp timestamp;
 	private int userId;
 	private int imageId;
+	private String username;
 	private String text;
 
 	public int getUserId() {
@@ -38,6 +39,14 @@ public class Comment {
 	
 	public void setText(String text) {
 		this.text = text;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	
 }
