@@ -79,13 +79,13 @@
 								if (next) next(); // show the default element of the list if present
 								break;
 							case 400: // bad request
-								self.alert.textContent = message;
+								self.alert.textContent = "Error code 400 :" + message;
 								break;
 							case 401: // unauthorized
-								self.alert.textContent = message;
+								self.alert.textContent = "Error code 401 :" + message;
 								break;
 							case 500: // server error
-								self.alert.textContent = message;
+								self.alert.textContent = "Error code 500 :" + message;
 								break;
 						}
 					}
@@ -243,13 +243,13 @@
 									console.log("New albums order saved successfully");
 									break;
 								case 400: // bad request
-									self.alert.textContent = message;
+									self.alert.textContent = "Error code 400 :" + message;
 									break;
 								case 401: // unauthorized
-									self.alert.textContent = message;
+									self.alert.textContent = "Error code 401 :" + message;
 									break;
 								case 500: // server error
-									self.alert.textContent = message;
+									self.alert.textContent = "Error code 500 :" + message;
 									break;
 							}
 						}
@@ -330,13 +330,13 @@
 								//if (next) next(); // show the default element of the list if present
 								break;
 							case 400: // bad request
-								self.alert.textContent = message;
+								self.alert.textContent = "Error code 400 :" + message;
 								break;
 							case 401: // unauthorized
-								self.alert.textContent = message;
+								self.alert.textContent = "Error code 401 :" + message;
 								break;
 							case 500: // server error
-								self.alert.textContent = message;
+								self.alert.textContent = "Error code 500 :" + message;
 								break;
 						}
 					}
@@ -528,7 +528,7 @@
 			cardText.textContent = image.description;
 			cardBody.appendChild(cardText);
 			
-			if(image.comments == null){
+			if(image.comments.lenght == undefined){
 				headlineCom = document.createElement("h5");
 				headlineCom.setAttribute("class","mt-sm-5 mb-sm-3");
 				headlineCom.textContent = 'Comments';

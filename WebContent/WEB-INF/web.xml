@@ -28,10 +28,10 @@ version="3.1">
  
   <filter-mapping> 
     <filter-name>LoginChecker</filter-name> 
-    <url-pattern>/GetAlbum</url-pattern> 
+    <url-pattern>/Album</url-pattern> 
     <url-pattern>/ChangeAlbumOrder</url-pattern> 
     <url-pattern>/CreateComment</url-pattern> 
-    <url-pattern>/GoToHomePage</url-pattern>
+    <url-pattern>/Home</url-pattern>
     <url-pattern>/Home.html</url-pattern>
   </filter-mapping> 
   <welcome-file-list>
