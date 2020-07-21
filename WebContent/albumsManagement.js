@@ -487,8 +487,6 @@
 		
 		//update the page content with the image details
 		this.update = function(image, comments) {
-
-			console.log(image);
 			
 			this.currentImage = image;
 			
@@ -627,9 +625,7 @@
 			cardBody.appendChild(titleForm);
 			
 			form = document.createElement("form");
-			form.setAttribute("action","CreateComment");
 			form.setAttribute("id","form");
-			form.setAttribute("method","POST");
 			cardBody.appendChild(form);
 			
 			textForm = document.createElement("div");
@@ -657,7 +653,7 @@
 			
 			buttonForm = document.createElement("button");
 			buttonForm.setAttribute("class","my-sm-4 btn btn-outline-primary");
-			buttonForm.setAttribute("type","submit");
+			buttonForm.setAttribute("type","button");
 			buttonForm.setAttribute("id","button");
 			buttonForm.textContent = "Submit Comment";
 			form.appendChild(buttonForm);
@@ -673,6 +669,8 @@
 						switch (req.status) {
 							case 200:
 								var comments = JSON.parse(message);
+								console.log(comments);
+								console.log(self.currentImage);
 								self.update(image, comments);
 								break;
 							case 400: // bad request
