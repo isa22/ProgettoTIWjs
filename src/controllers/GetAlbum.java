@@ -65,7 +65,6 @@ public class GetAlbum extends HttpServlet{
 		}
 		//Retrieve images from DB 
 		try {
-			//TODO change imageDAO parameters
 			images = imageDAO.findImagesByAlbum(albumId);
 		} catch (SQLException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile recuperare le immagini dell'album");

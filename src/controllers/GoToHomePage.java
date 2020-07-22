@@ -6,16 +6,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.json.JSONObject;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -24,7 +20,6 @@ import beans.Album;
 import beans.AlbumOrder;
 import beans.User;
 import dao.AlbumDAO;
-import dao.AlbumOrderDAO;
 import utils.ConnectionHandler;
 
 @WebServlet("/Home")
@@ -46,10 +41,7 @@ public class GoToHomePage extends HttpServlet{
 		
 		HttpSession session = request.getSession();
 
-		ServletContext servletContext = getServletContext();
-
 		AlbumDAO albumDAO = new AlbumDAO(connection);
-		AlbumOrderDAO orderDAO = new AlbumOrderDAO(connection);
 		List<Album> albums = new ArrayList<Album>();
 		
 		//retrieve the albums from DB
@@ -83,9 +75,6 @@ public class GoToHomePage extends HttpServlet{
 		Gson gson = new GsonBuilder()
 				   .setDateFormat("yyyy MMM dd").create();
 		String json = gson.toJson(orderedAlbums);
-		
-		//JSONObject resp = new JSONObject();
-		//resp.append("albums", orderedAlbums);
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(json);

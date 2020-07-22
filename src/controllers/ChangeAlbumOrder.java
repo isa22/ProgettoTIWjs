@@ -46,9 +46,7 @@ public class ChangeAlbumOrder extends HttpServlet {
 
 	private Connection connection = null;
        
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+    
     public ChangeAlbumOrder() {
         super();
     }
@@ -56,19 +54,13 @@ public class ChangeAlbumOrder extends HttpServlet {
     public void init() throws ServletException {
 		connection = ConnectionHandler.getConnection(getServletContext());
 	}
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
+    
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		HttpSession session = request.getSession();
 		JSONObject resp = new JSONObject();
 		if(session == null) {
@@ -79,7 +71,6 @@ public class ChangeAlbumOrder extends HttpServlet {
 			response.getWriter().write(resp.toString());
 			return;
 		}
-		//JSONObject data = new JSONObject(request.getReader().readLine());
 		
 		 StringBuffer jb = new StringBuffer();
 		 String line = null;
@@ -100,7 +91,7 @@ public class ChangeAlbumOrder extends HttpServlet {
 		User userBean = (User) session.getAttribute("user");
 		int userId = (int) userBean.getId();
 		String orderString = (String) data.get("Method");
-		JsonObject newOrder  = new JsonParser().parse(orderString).getAsJsonObject();
+		JsonObject newOrder  = JsonParser.parseString(orderString).getAsJsonObject();
 		JsonElement newOrderArray = newOrder.get("newOrder");
 		Type listType = new TypeToken<ArrayList<Integer>>() {}.getType();
 		List<Integer> orderList = new Gson().fromJson(newOrderArray, listType);
@@ -115,7 +106,6 @@ public class ChangeAlbumOrder extends HttpServlet {
 			response.setCharacterEncoding("UTF-8");
 			response.getWriter().write(resp.toString());
 		}
-		
 		//set new album order in user session
 		AlbumOrder newOrderBean = new AlbumOrder();
 		newOrderBean.setOrder(orderList); 

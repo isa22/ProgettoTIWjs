@@ -7,7 +7,6 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -31,25 +30,15 @@ public class Login extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
   
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-  
     public Login() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     public void init() throws ServletException {
 		connection = ConnectionHandler.getConnection(getServletContext());
 	}
     
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		String path = "Login.html";
 		JSONObject json = new JSONObject();
 		json.append("redirect", path);
@@ -57,10 +46,6 @@ public class Login extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(json.toString());
 	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
     
 
 	
@@ -84,7 +69,6 @@ public class Login extends HttpServlet {
 			digest = MessageDigest.getInstance("SHA-256");
 			hash = digest.digest(pwd.getBytes(StandardCharsets.UTF_8));
 		} catch (NoSuchAlgorithmException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		try {
@@ -98,7 +82,6 @@ public class Login extends HttpServlet {
 		}
 
 		if(user== null) {
-			//TODO credo che in caso di mancato match il db ritorni semplicemente zero risultati e non un'eccezione.
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().println("User non trovato");
 			System.out.println("User not found");
@@ -126,10 +109,6 @@ public class Login extends HttpServlet {
 			response.setCharacterEncoding("UTF-8");
 			response.getWriter().println(usrn);
 
-			
-			//forward the request toward goToHomePage servlet
-			//RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/Home");
-		    //dispatcher.forward(request, response);
 		}
 		
 			
