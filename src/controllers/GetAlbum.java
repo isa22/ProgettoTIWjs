@@ -59,7 +59,8 @@ public class GetAlbum extends HttpServlet{
 		try {
 			albumId = Integer.parseInt(request.getParameter("albumId"));
 		} catch(NumberFormatException e) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Richiesta non valida");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().write("Richiesta non valida");
 			System.out.println("Server Error: request parameter albumId hasn't been parsed correctly");
 			return;
 		}
@@ -67,14 +68,16 @@ public class GetAlbum extends HttpServlet{
 		try {
 			images = imageDAO.findImagesByAlbum(albumId);
 		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile recuperare le immagini dell'album");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().write("Impossibile recuperare le immagini dell'album");
 			System.out.println("Server Error: SQLException thrown by imageDAO.findImagesByAlbum");
 			return;
 		}
 		try {
 			album = albumDAO.getTitleOfAlbum(albumId);
 		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile recuperare le immagini dell'album");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().write("Impossibile recuperare le immagini dell'album");
 			System.out.println("Server Error: SQLException thrown by albumDAO.getTitleOfAlbum");
 			return;
 		}
@@ -89,14 +92,16 @@ public class GetAlbum extends HttpServlet{
 			}
 		}
 		catch(SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Impossibile recuperare i commenti");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().write("Impossibile recuperare i commenti");
 			System.out.println("Server Error: SQLException thrown by commentDao.findCommentsByImage");
 			return;
 		}
 		if(album !=null)
 			album.setImages(images);
 		else {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "L'album richiesto non esiste");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().write("L'album richiesto non esiste");
 			System.out.println("Server Error: SQLException thrown by albumDAO.getTitleOfAlbum");
 		}
 		

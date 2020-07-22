@@ -83,8 +83,8 @@ public class Login extends HttpServlet {
 
 		if(user== null) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.getWriter().println("User non trovato");
-			System.out.println("User not found");
+			response.getWriter().println("User o password non validi");
+			System.out.println("User or password not valid");
 			return;
 		}
 		else {

@@ -48,7 +48,8 @@ public class GoToHomePage extends HttpServlet{
 		try {
 			albums = albumDAO.findAll();
 		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Richiesta non valida");
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().write("Richiesta non valida");
 			System.out.println("Server Error: SQLException thrown by albumDAO.findAll");
 			return;
 		}

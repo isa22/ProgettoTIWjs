@@ -503,7 +503,6 @@
 		this.update = function(image, comments) {
 			
 			this.currentImage = image;
-			
 			//html elements for showing the images
 			var modalContent, modalHeader, modalTitle, closeButton, closeText, modalBody;
 			var infoContainer, naturalImg, card, cardBody, cardText;
@@ -684,6 +683,7 @@
 								var comments = JSON.parse(message);
 								console.log(comments);
 								console.log(self.currentImage);
+								image.comments = comments;
 								self.update(image, comments);
 								break;
 							case 400: // bad request
