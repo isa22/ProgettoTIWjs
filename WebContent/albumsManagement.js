@@ -198,7 +198,7 @@
 				if( target && target !== dragEl && target.getAttribute("sortable") === "true" ){
 
 					var rect = target.getBoundingClientRect(); //target card rect (used to get its size on screen)
-					var next = (e.clientY - rect.top)/(rect.bottom - rect.top) > .5; //true if we are up the target that triggered the event
+					var next = (e.clientY - (rect.top+200))/(rect.bottom - rect.top) > .5; //true if we are up the target that triggered the event
 
 					//thanks to "next" we understand where to put in the albumList the dragged album
 					rootEl.insertBefore(dragEl, next && target.nextSibling || target);
