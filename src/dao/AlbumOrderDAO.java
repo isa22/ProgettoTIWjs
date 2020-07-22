@@ -44,7 +44,7 @@ public class AlbumOrderDAO {
 	}
 	
 	//update album order after a submit of the client
-	public void changeAlbumOrder(int userId, List order) throws SQLException{
+	public void changeAlbumOrder(int userId, List<Integer> order) throws SQLException{
 		
 		String query = "UPDATE dbtiwexam1920js.albumorder SET albumorder = ? WHERE user = ? and album = ?";
 		PreparedStatement pstatement = null;

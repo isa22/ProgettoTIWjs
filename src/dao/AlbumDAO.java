@@ -82,7 +82,7 @@ public class AlbumDAO {
 		return albums;
 	}
 	
-	//TODO check if it is still needed in js or not
+
 	public Album getTitleOfAlbum(int albumId) throws SQLException {
 		Album album = new Album();
 		String query = "SELECT title from dbtiwexam1920js.album where id = ?";
