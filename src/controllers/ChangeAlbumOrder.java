@@ -6,10 +6,8 @@ import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -19,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -29,7 +26,6 @@ import beans.AlbumOrder;
 import beans.User;
 
 import org.json.HTTP;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -63,19 +59,11 @@ public class ChangeAlbumOrder extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		JSONObject resp = new JSONObject();
-		if(session == null) {
-			
-			resp.append("redirect","/Login");
-			response.setContentType("application/json");
-			response.setCharacterEncoding("UTF-8");
-			response.getWriter().write(resp.toString());
-			return;
-		}
-		
-		 StringBuffer jb = new StringBuffer();
-		 String line = null;
-         JSONObject data;
-		  try {
+		StringBuffer jb = new StringBuffer();
+		String line = null;
+        JSONObject data = null;
+        //Putting the request in a string
+		try {
 		    BufferedReader reader = request.getReader();
 		    while ((line = reader.readLine()) != null)
 		      jb.append(line);
@@ -84,10 +72,9 @@ public class ChangeAlbumOrder extends HttpServlet {
 		  try {
 		    data =  HTTP.toJSONObject(jb.toString());
 		  } catch (JSONException e) {
-		    // crash and burn
-		    throw new IOException("Error parsing JSON request string");
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore interno al server");
 		  }
-		
+		//Parsing the request string in a JsonObject
 		User userBean = (User) session.getAttribute("user");
 		int userId = (int) userBean.getId();
 		String orderString = (String) data.get("Method");

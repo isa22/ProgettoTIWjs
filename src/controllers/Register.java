@@ -42,7 +42,6 @@ public class Register extends HttpServlet {
 		connection = ConnectionHandler.getConnection(getServletContext());
 	}
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		String path = "Login.html";
 		JSONObject json = new JSONObject();
 		json.append("redirect", path);
