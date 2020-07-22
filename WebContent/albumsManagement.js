@@ -526,8 +526,7 @@
 			//create the text and append it to button
 			closeText = document.createElement("div");
 			closeText.setAttribute("aria-hidden","true");
-			closeText.setAttribute("class","small");
-			closeText.textContent = 'close';
+			closeText.textContent = "\u00D7";
 			closeButton.appendChild(closeText);
 			
 			//create the modal body and append it to modal content
