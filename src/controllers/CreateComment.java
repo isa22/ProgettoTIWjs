@@ -9,6 +9,7 @@ import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,12 +19,16 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONObject;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import beans.Comment;
 import beans.User;
 import dao.CommentDAO;
 import utils.ConnectionHandler;
 
 @WebServlet("/CreateComment")
+@MultipartConfig
 public class CreateComment extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -80,11 +85,13 @@ public class CreateComment extends HttpServlet {
 			
 		}
 		// return the user to the right view
-
-		JSONObject resp = new JSONObject(comments);
+		Gson gson = new GsonBuilder()
+				   .setDateFormat("yyyy MMM dd").create();
+		String json = gson.toJson(comments);
+		
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(resp.toString());
+		response.getWriter().write(json);
 		
 	}
 
