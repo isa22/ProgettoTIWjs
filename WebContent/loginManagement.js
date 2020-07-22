@@ -42,13 +42,13 @@
                 window.location.href = "Home.html";			 //redirect to home
                 break;
               case 400: // bad request
-                document.getElementById("alertMessage").textContent = message;
+                document.getElementById("alertMessage").textContent = "\u00BB Error code 400: " + message;
                 break;
               case 401: // unauthorized
-                  document.getElementById("alertMessage").textContent = message;
+                  document.getElementById("alertMessage").textContent = "\u00BB Error code 401: " + message;
                   break;
               case 500: // server error
-            	document.getElementById("alertMessage").textContent = message;
+            	document.getElementById("alertMessage").textContent = "\u00BB Error code 500: " + message;
                 break;
             }
           }
@@ -97,13 +97,13 @@
                 window.location.href = "Home.html";			 //redirect to home
                 break;
               case 400: // bad request
-                document.getElementById("alertMessage").textContent = message;
+                document.getElementById("alertMessage").textContent = "\u00BB Error code 400: " + message;
                 break;
               case 401: // unauthorized
-                  document.getElementById("alertMessage").textContent = message;
+                  document.getElementById("alertMessage").textContent = "\u00BB Error code 401: " + message;
                   break;
               case 500: // server error
-            	document.getElementById("alertMessage").textContent = message;
+            	document.getElementById("alertMessage").textContent = "\u00BB Error code 500: " + message;
                 break;
             }
           }

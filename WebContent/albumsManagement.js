@@ -35,16 +35,17 @@
 							switch (req.status) {
 								case 200:
 									console.log("Response = " + message);
+									sessionStorage.clear();
 									window.location.href = "Login.html";			 //redirect to login
 									break;
 								case 400: // bad request
-									this.alert.textContent = "Error code 400 :" + message;
+									this.alert.textContent = "\u00BB Error code 400: " + message;
 									break;
 								case 401: // unauthorized
-									this.alert.textContent = "Error code 401 :" + message;
+									this.alert.textContent = "\u00BB Error code 401: " + message;
 									break;
 								case 500: // server error
-									this.alert.textContent = "Error code 500 :" + message;
+									this.alert.textContent = "\u00BB Error code 500: " + message;
 									break;
 							}
 						}
@@ -93,13 +94,13 @@
 								self.update(albumsToShow); // self visible by closure
 								break;
 							case 400: // bad request
-								self.alert.textContent = "Error code 400 :" + message;
+								self.alert.textContent = "\u00BB Error code 400: " + message;
 								break;
 							case 401: // unauthorized
-								self.alert.textContent = "Error code 401 :" + message;
+								self.alert.textContent = "\u00BB Error code 401: " + message;
 								break;
 							case 500: // server error
-								self.alert.textContent = "Error code 500 :" + message;
+								self.alert.textContent = "\u00BB Error code 500: " + message;
 								break;
 						}
 					}
@@ -274,15 +275,28 @@
 							switch (req.status) {
 								case 200:
 									console.log("New albums order saved successfully");
+
+									//log in green that the new albums order is saved
+									self.alert.classList.remove("text-danger");
+									self.alert.classList.add("text-success");
+									self.alert.textContent = "\u00BB New albums order saved successfully";
+
+									//clean alert bar after 5 seconds
+									setTimeout(function () {
+										self.alert.textContent = "\u00BB";
+										self.alert.classList.add("text-danger");
+										self.alert.classList.remove("text-success");
+									},5000);
+
 									break;
 								case 400: // bad request
-									self.alert.textContent = "Error code 400 :" + message;
+									self.alert.textContent = "\u00BB Error code 400: " + message;
 									break;
 								case 401: // unauthorized
-									self.alert.textContent = "Error code 401 :" + message;
+									self.alert.textContent = "\u00BB Error code 401: " + message;
 									break;
 								case 500: // server error
-									self.alert.textContent = "Error code 500 :" + message;
+									self.alert.textContent = "\u00BB Error code 500: " + message;
 									break;
 							}
 						}
@@ -368,13 +382,13 @@
 								self.update(albumImages.images, 1); // self visible by closure
 								break;
 							case 400: // bad request
-								self.alert.textContent = "Error code 400 :" + message;
+								self.alert.textContent = "\u00BB Error code 400: " + message;
 								break;
 							case 401: // unauthorized
-								self.alert.textContent = "Error code 401 :" + message;
+								self.alert.textContent = "\u00BB Error code 401: " + message;
 								break;
 							case 500: // server error
-								self.alert.textContent = "Error code 500 :" + message;
+								self.alert.textContent = "\u00BB Error code 500: " + message;
 								break;
 						}
 					}
@@ -673,13 +687,13 @@
 								self.update(image, comments);
 								break;
 							case 400: // bad request
-								self.alert.textContent = "Error code 400 :" + message;
+								self.alert.textContent = "\u00BB Error code 400: " + message;
 								break;
 							case 401: // unauthorized
-								self.alert.textContent = "Error code 401 :" + message;
+								self.alert.textContent = "\u00BB Error code 401: " + message;
 								break;
 							case 500: // server error
-								self.alert.textContent = "Error code 500 :" + message;
+								self.alert.textContent = "\u00BB Error code 500: " + message;
 								break;
 						}
 					}
@@ -765,7 +779,7 @@
 
 		//bring page to default state
 		this.refresh = function() {
-			alertContainer.textContent = "";
+			alertContainer.textContent = "\u00BB";
 			imagesList.reset();
 			albumList.show();
 			//imageDetails.reset();
