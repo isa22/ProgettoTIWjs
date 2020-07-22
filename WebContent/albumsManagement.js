@@ -24,35 +24,8 @@
 		this.show = function() {
 			messagecontainer.textContent = "Username: " + this.username;
 		};
-
-		//register event of logout for logoutButton
-		this.setLogoutButton = function () {
-			this.logoutButton.addEventListener("click", (e) => {
-				makeSearchCall("POST", "Logout",
-					function(req) {
-						if (req.readyState == XMLHttpRequest.DONE) {
-							var message = req.responseText;
-							switch (req.status) {
-								case 200:
-									console.log("Response = " + message);
-									sessionStorage.clear();
-									window.location.href = "Login.html";			 //redirect to login
-									break;
-								case 400: // bad request
-									this.alert.textContent = "\u00BB Error code 400: " + message;
-									break;
-								case 401: // unauthorized
-									this.alert.textContent = "\u00BB Error code 401: " + message;
-									break;
-								case 500: // server error
-									this.alert.textContent = "\u00BB Error code 500: " + message;
-									break;
-							}
-						}
-					}
-				);
-			});
-		};
+		
+		
 	}
 
 
@@ -745,7 +718,6 @@
 				document.getElementById("personalMessage"),
 				document.getElementById("logoutButton"));
 			personalMessage.show();
-			personalMessage.setLogoutButton();
 
 			albumList = new AlbumsList(
 				alertContainer,
@@ -775,6 +747,10 @@
 					alertContainer, 
 					document.getElementById("modalImageContainer"),
 					document.getElementById("modalImageBody"));
+			
+			document.getElementById("logoutButton").addEventListener('click', () => {
+		        sessionStorage.clear();
+		      })
 		};
 
 		//bring page to default state

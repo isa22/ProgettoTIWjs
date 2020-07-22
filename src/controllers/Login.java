@@ -90,7 +90,6 @@ public class Login extends HttpServlet {
 		else {
 			AlbumOrderDAO orderDao = new AlbumOrderDAO(connection);
 			AlbumOrder order = null;
-			System.out.println(user);
 			try {
 				order = orderDao.getAlbumOrder(user.getId());
 			}
