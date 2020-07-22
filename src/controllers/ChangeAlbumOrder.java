@@ -25,8 +25,6 @@ import com.google.gson.reflect.TypeToken;
 import beans.AlbumOrder;
 import beans.User;
 
-import org.json.JSONObject;
-
 import dao.AlbumOrderDAO;
 import utils.ConnectionHandler;
 
@@ -56,7 +54,6 @@ public class ChangeAlbumOrder extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		JSONObject resp = new JSONObject();
 		StringBuffer jb = new StringBuffer();
 		String line = null;
         JsonObject data = null;
@@ -65,7 +62,10 @@ public class ChangeAlbumOrder extends HttpServlet {
 		    BufferedReader reader = request.getReader();
 		    while ((line = reader.readLine()) != null)
 		      jb.append(line);
-		  } catch (Exception e) { /*report an error*/ }
+		  } catch (Exception e) { 
+			  response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			  response.getWriter().write("Errore interno al server");
+		  }
 		data =  JsonParser.parseString(jb.toString()).getAsJsonObject();  
 		User userBean = (User) session.getAttribute("user");
 		int userId = (int) userBean.getId();
@@ -78,10 +78,8 @@ public class ChangeAlbumOrder extends HttpServlet {
 			orderDao.changeAlbumOrder(userId, orderList);
 		}
 		catch(SQLException e) {
-			resp.append("error", "Update failed");
-			response.setContentType("application/json");
-			response.setCharacterEncoding("UTF-8");
-			response.getWriter().write(resp.toString());
+			  response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			  response.getWriter().write("Errore interno al server");
 		}
 		//set new album order in user session
 		AlbumOrder newOrderBean = new AlbumOrder();

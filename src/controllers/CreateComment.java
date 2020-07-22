@@ -58,7 +58,8 @@ public class CreateComment extends HttpServlet {
 			e.printStackTrace();
 		}
 		if (isBadRequest) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Richiesta non valida");
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().write("Richiesta non valida");
 			if(text.isEmpty()) System.out.println("Server error: empty comment text");
 			return;
 		}
@@ -69,7 +70,8 @@ public class CreateComment extends HttpServlet {
 		try {
 			commentDAO.createComment(userId,imageId,text);
 		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Il commento non può essere creato");
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().write("Il commento non può essere creato");
 			System.out.println("Server error: SQLException thrown by commentDAO.createComment");
 			return;
 		}
