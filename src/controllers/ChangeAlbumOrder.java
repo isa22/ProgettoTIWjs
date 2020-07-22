@@ -25,8 +25,6 @@ import com.google.gson.reflect.TypeToken;
 import beans.AlbumOrder;
 import beans.User;
 
-import org.json.HTTP;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import dao.AlbumOrderDAO;
@@ -61,25 +59,17 @@ public class ChangeAlbumOrder extends HttpServlet {
 		JSONObject resp = new JSONObject();
 		StringBuffer jb = new StringBuffer();
 		String line = null;
-        JSONObject data = null;
+        JsonObject data = null;
         //Putting the request in a string
 		try {
 		    BufferedReader reader = request.getReader();
 		    while ((line = reader.readLine()) != null)
 		      jb.append(line);
 		  } catch (Exception e) { /*report an error*/ }
-
-		  try {
-		    data =  HTTP.toJSONObject(jb.toString());
-		  } catch (JSONException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Errore interno al server");
-		  }
-		//Parsing the request string in a JsonObject
+		data =  JsonParser.parseString(jb.toString()).getAsJsonObject();  
 		User userBean = (User) session.getAttribute("user");
 		int userId = (int) userBean.getId();
-		String orderString = (String) data.get("Method");
-		JsonObject newOrder  = JsonParser.parseString(orderString).getAsJsonObject();
-		JsonElement newOrderArray = newOrder.get("newOrder");
+		JsonElement newOrderArray = data.get("newOrder");
 		Type listType = new TypeToken<ArrayList<Integer>>() {}.getType();
 		List<Integer> orderList = new Gson().fromJson(newOrderArray, listType);
 		AlbumOrderDAO orderDao;
