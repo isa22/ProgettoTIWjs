@@ -3,6 +3,9 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+
+import org.apache.commons.lang.StringEscapeUtils;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -68,8 +71,8 @@ public class UserDAO {
 			while (result.next()) {
 				user = new User();
 				user.setId(result.getInt("id"));
-				user.setUsername(result.getString("username"));
-				user.setUsername(result.getString("email"));
+				user.setUsername(StringEscapeUtils.unescapeJava(result.getString("username")));
+				user.setUsername(StringEscapeUtils.unescapeJava(result.getString("email")));
 			}
 		} catch (SQLException e) {
 		    e.printStackTrace();
