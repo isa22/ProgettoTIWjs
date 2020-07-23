@@ -154,7 +154,7 @@
 			// Function triggered when a dragged element is over an other
 			function _onDragOver(e) {
 
-				//disable triggering event while handling this one
+				//disable default event behavior
 				e.preventDefault();
 
 				//change cursor icon
@@ -181,7 +181,7 @@
 			// End of sorting
 			function _onDragEnd(e){
 
-				//disable triggering event while handling this one
+				//disable default event behavior
 				e.preventDefault();
 
 				//make dragged element look normal (no more transparent)
