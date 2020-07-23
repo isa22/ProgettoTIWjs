@@ -6,6 +6,7 @@ import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -71,12 +72,13 @@ public class ChangeAlbumOrder extends HttpServlet {
 		User userBean = (User) session.getAttribute("user");
 		int userId = (int) userBean.getId();
 		JsonElement newOrderArray = data.get("newOrder");
-		Type listType = new TypeToken<ArrayList<Integer>>() {}.getType();
+		Type listType = new TypeToken<ArrayList<Integer>>() {}.getType(); //ListType needed to convert JsonElements into Arrays
 		List<Integer> orderList = new Gson().fromJson(newOrderArray, listType);
 		//check if album order parameter ids exist in the DB
 		AlbumDAO albumDAO = new AlbumDAO(connection);
 		try {
 			List<Integer> ids = albumDAO.getAlbumIds();
+			System.out.println(Arrays.toString(ids.toArray()));
 			for(int el: orderList) {
 				if(!ids.contains(el)) {
 					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

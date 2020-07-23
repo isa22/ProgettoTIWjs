@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.catalina.tribes.util.Arrays;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.json.JSONObject;
 
 import beans.User;
 import dao.AlbumDAO;
@@ -41,12 +40,8 @@ public class Register extends HttpServlet {
 		connection = ConnectionHandler.getConnection(getServletContext());
 	}
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String path = "Login.html";
-		JSONObject json = new JSONObject();
-		json.append("redirect", path);
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
-		response.getWriter().write(json.toString());
+    	String loginpath = request.getServletContext().getContextPath() + "/Login.html";
+		response.sendRedirect(loginpath);
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -98,6 +93,7 @@ public class Register extends HttpServlet {
 			User user;
 			MessageDigest digest = null;
 			byte[] hash = pwd1.getBytes();
+			//hashing of the password
 			try {
 				digest = MessageDigest.getInstance("SHA-256");
 				hash = digest.digest(pwd1.getBytes(StandardCharsets.UTF_8));

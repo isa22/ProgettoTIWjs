@@ -117,13 +117,13 @@ public class AlbumDAO {
 	
 	public List<Integer> getAlbumIds() throws SQLException {
 		List<Integer> ids = new ArrayList<Integer>();
-		String query = "SELECT id FROM dbtiwexam1920js.album";
+		String query = "SELECT id FROM dbtiwexam1920js.album order by date desc";
 		ResultSet result = null;
 		PreparedStatement pstatement = null;
 		try {
 			pstatement = connection.prepareStatement(query);
 			result = pstatement.executeQuery();
-			if(result.next())
+			while(result.next())
 				ids.add(result.getInt(1));
 		} catch (SQLException e) {
 		    e.printStackTrace();

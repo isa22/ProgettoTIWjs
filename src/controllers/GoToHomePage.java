@@ -56,6 +56,7 @@ public class GoToHomePage extends HttpServlet{
 		User user = (User) session.getAttribute("user");
 		AlbumOrder albumOrder = user.getAlbumOrder();
 		List<Album> orderedAlbums = new ArrayList<Album>();
+		//reordering of the album list from the DB following the user order
 		if (albumOrder !=null) {
 			for(Integer n : albumOrder.getOrder()) {
 				Album toRemove=null;
