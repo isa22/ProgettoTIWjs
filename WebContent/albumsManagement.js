@@ -16,9 +16,8 @@
 
 	// Constructors of view components
 
-	function PersonalMessage(_username, messagecontainer, _logoutButton) {
+	function PersonalMessage(_username, messagecontainer) {
 		this.username = _username;
-		this.logoutButton = _logoutButton;
 
 		//display username
 		this.show = function() {
@@ -687,8 +686,7 @@
 		this.start = function() {
 
 			var personalMessage = new PersonalMessage(sessionStorage.getItem('username'),
-				document.getElementById("personalMessage"),
-				document.getElementById("logoutButton"));
+				document.getElementById("personalMessage"));
 			personalMessage.show();
 
 			albumList = new AlbumsList(

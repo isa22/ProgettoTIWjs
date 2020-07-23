@@ -117,7 +117,7 @@ public class Register extends HttpServlet {
 			try {
 				AlbumOrderDAO albumOrder = new AlbumOrderDAO(connection);
 				AlbumDAO album = new AlbumDAO(connection);
-				albumOrder.createAlbumOrder(user.getId(), album.getNumberOfAlbum());
+				albumOrder.createAlbumOrder(user.getId(), album.getAlbumIds());
 			}
 			catch(SQLException e) {
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

@@ -24,7 +24,7 @@ import com.google.gson.reflect.TypeToken;
 
 import beans.AlbumOrder;
 import beans.User;
-
+import dao.AlbumDAO;
 import dao.AlbumOrderDAO;
 import utils.ConnectionHandler;
 
@@ -65,6 +65,7 @@ public class ChangeAlbumOrder extends HttpServlet {
 		  } catch (Exception e) { 
 			  response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			  response.getWriter().write("Errore interno al server");
+			  return;
 		  }
 		data =  JsonParser.parseString(jb.toString()).getAsJsonObject();  
 		User userBean = (User) session.getAttribute("user");
@@ -72,6 +73,23 @@ public class ChangeAlbumOrder extends HttpServlet {
 		JsonElement newOrderArray = data.get("newOrder");
 		Type listType = new TypeToken<ArrayList<Integer>>() {}.getType();
 		List<Integer> orderList = new Gson().fromJson(newOrderArray, listType);
+		//check if album order parameter ids exist in the DB
+		AlbumDAO albumDAO = new AlbumDAO(connection);
+		try {
+			List<Integer> ids = albumDAO.getAlbumIds();
+			for(int el: orderList) {
+				if(!ids.contains(el)) {
+					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+					response.getWriter().println("Richiesta non valida");
+					return;
+				}		
+			}
+		} catch (SQLException e1) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().write("Errore interno al server");
+			return;
+		}
+	
 		AlbumOrderDAO orderDao;
 		try {
 			orderDao = new AlbumOrderDAO(connection);
@@ -80,6 +98,7 @@ public class ChangeAlbumOrder extends HttpServlet {
 		catch(SQLException e) {
 			  response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			  response.getWriter().write("Errore interno al server");
+			  return;
 		}
 		//set new album order in user session
 		AlbumOrder newOrderBean = new AlbumOrder();

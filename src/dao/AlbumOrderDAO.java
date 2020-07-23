@@ -17,14 +17,14 @@ public class AlbumOrderDAO {
 	}
 	
 	//create a new album order for new users
-	public void createAlbumOrder(int userId, int albumNum) throws SQLException {
+	public void createAlbumOrder(int userId, List<Integer> ids) throws SQLException {
 		
 		String query = "INSERT into dbtiwexam1920js.albumorder (album, user, albumorder) VALUES(?, ?, ?)";
 		PreparedStatement pstatement = null;
 		try {
-			for (int i = 1; i <= albumNum; i++) {
+			for (int i = 1; i <= ids.size(); i++) {
 				pstatement = connection.prepareStatement(query);
-				pstatement.setInt(1, i);
+				pstatement.setInt(1, ids.get(i-1));
 				pstatement.setInt(2, userId);
 				pstatement.setInt(3, i);
 				pstatement.executeUpdate();

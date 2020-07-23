@@ -115,16 +115,16 @@ public class AlbumDAO {
 	}
 
 	
-	public int getNumberOfAlbum() throws SQLException {
-		int num = 0;
-		String query = "SELECT COUNT(*) FROM dbtiwexam1920js.album";
+	public List<Integer> getAlbumIds() throws SQLException {
+		List<Integer> ids = new ArrayList<Integer>();
+		String query = "SELECT id FROM dbtiwexam1920js.album";
 		ResultSet result = null;
 		PreparedStatement pstatement = null;
 		try {
 			pstatement = connection.prepareStatement(query);
 			result = pstatement.executeQuery();
 			if(result.next())
-				num = result.getInt(1);
+				ids.add(result.getInt(1));
 		} catch (SQLException e) {
 		    e.printStackTrace();
 			throw new SQLException(e);
@@ -141,7 +141,7 @@ public class AlbumDAO {
 			}
 		}
 		
-		return num;
+		return ids;
 	}
 	
 	
