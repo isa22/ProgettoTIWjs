@@ -20,7 +20,7 @@
 	  }
 	
 	//This function is used to send a request that does not need to upload form data
-	//(the previous function can be used as this one, with "formData" parameter equal to null)
+	//(the previous function can be used as this one, with body parameter equal to null)
 	function makeSearchCall(method, url, cback) {
 	    var req = new XMLHttpRequest(); // visible by closure
 	    req.onreadystatechange = function() {
