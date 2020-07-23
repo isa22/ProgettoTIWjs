@@ -52,10 +52,8 @@ public class Login extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String usrn = null;
 		String pwd = null;
-		System.out.println(request.getParameter("username"));
 		usrn = StringEscapeUtils.escapeJava(request.getParameter("username"));
 		pwd = StringEscapeUtils.escapeJava(request.getParameter("password"));
-		System.out.println(usrn);
 		if (usrn == null || pwd == null || usrn.isEmpty() || pwd.isEmpty() ) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().println("Richiesta non valida");
