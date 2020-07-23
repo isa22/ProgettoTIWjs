@@ -676,34 +676,6 @@
 		    }); 
 		    
 		};
-		
-		
-
-	
-		this.registerEvents = function() {
-			this.form.querySelector("input[type='button']").addEventListener('click', (e) => {
-				var form = e.target.closest("form");
-				if (form.checkValidity()) {
-					var self = this,
-						missionToReport = form.querySelector("input[type = 'hidden']").value;
-					makeFormCall("POST", 'CreateComment', form,
-						function(req) {
-							if (req.readyState == 4) {
-								var message = req.responseText;
-								if (req.status == 200) {
-									orchestrator.refresh(missionToReport);
-								} else {
-									self.alert.textContent = message;
-								}
-							}
-						}
-					);
-				} else {
-					form.reportValidity();
-				}
-			});
-
-		};
 
 	  }
 
