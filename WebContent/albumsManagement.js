@@ -62,7 +62,7 @@
 							case 200:
 								console.log("Response = " + message);
 								var albumsToShow = JSON.parse(req.responseText);
-								if (albumsToShow.length == 0) {self.alert.textContent = "No albums found!"; return;}
+								if (albumsToShow.length == 0) {self.alert.textContent = "\u00BB No albums found!"; return;}
 								self.update(albumsToShow); // self visible by closure
 								break;
 							case 400: // bad request
@@ -151,7 +151,7 @@
 				itemEl.draggable = true;
 			});
 
-			// Function triggered when a dragged element is over an other
+			// Function triggered when a dragged element is over an other one
 			function _onDragOver(e) {
 
 				//disable default event behavior

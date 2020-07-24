@@ -5,7 +5,7 @@
 (function() { // avoid variables ending up in the global scope
 
   //function used to validate email using a regular expression (https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript)
-  let validateEmail = function (email){
+  var validateEmail = function (email){
 	    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 	    return re.test(String(email).toLowerCase());
   };
