@@ -460,10 +460,10 @@
 		//reference to alert element
 		this.alert = _alert;
 
-		//reference to
+		//reference to modal container
 		this.listcontainer = _listcontainer;
 
-		//reference to albums container body
+		//reference to modal container body
 		this.listcontainerbody = _listcontainerbody;
 
 		this.reset = function() {
